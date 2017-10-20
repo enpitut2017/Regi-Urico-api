@@ -14,12 +14,12 @@ ActiveRecord::Schema.define(version: 20171020072623) do
 
   create_table "event_items", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "price"
-    t.bigint "Item_id"
-    t.bigint "Event_id"
+    t.bigint "item_id"
+    t.bigint "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["Event_id"], name: "index_event_items_on_Event_id"
-    t.index ["Item_id"], name: "index_event_items_on_Item_id"
+    t.index ["event_id"], name: "index_event_items_on_event_id"
+    t.index ["item_id"], name: "index_event_items_on_item_id"
   end
 
   create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -36,10 +36,10 @@ ActiveRecord::Schema.define(version: 20171020072623) do
 
   create_table "logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "diff_count"
-    t.bigint "EventItem_id"
+    t.bigint "event_items_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["EventItem_id"], name: "index_logs_on_EventItem_id"
+    t.index ["event_items_id"], name: "index_logs_on_event_items_id"
   end
 
   create_table "sellers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
