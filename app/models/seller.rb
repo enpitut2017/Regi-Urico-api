@@ -1,4 +1,4 @@
 class Seller < ApplicationRecord
-  has_many :Event
-  has_many :Item
+  has_many :events
+  has_many :items
 end

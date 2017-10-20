@@ -1,4 +1,4 @@
 class Item < ApplicationRecord
-  has_many :EventItem
-  belongs_to :Seller
+  has_many :event_items
+  belongs_to :seller
 end

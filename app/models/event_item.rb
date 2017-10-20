@@ -1,4 +1,4 @@
 class EventItem < ApplicationRecord
-  belongs_to :Event
-  belongs_to :Item
+  belongs_to :event
+  belongs_to :item
 end
