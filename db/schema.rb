@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171020072623) do
+ActiveRecord::Schema.define(version: 20171022151221) do
 
   create_table "event_items", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "price"
@@ -26,12 +26,16 @@ ActiveRecord::Schema.define(version: 20171020072623) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "seller_id"
+    t.index ["seller_id"], name: "index_events_on_seller_id"
   end
 
   create_table "items", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "seller_id"
+    t.index ["seller_id"], name: "index_items_on_seller_id"
   end
 
   create_table "logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -48,4 +52,6 @@ ActiveRecord::Schema.define(version: 20171020072623) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "events", "sellers"
+  add_foreign_key "items", "sellers"
 end
