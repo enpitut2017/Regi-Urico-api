@@ -13,6 +13,7 @@ class EventSerializer < ActiveModel::Serializer
     attributes :price
     attribute :item_id
     attribute :name
+    attribute :count
     
     def item_id
       object.item.id
@@ -20,6 +21,11 @@ class EventSerializer < ActiveModel::Serializer
     
     def name
       object.item.name
+    end
+    
+    def count
+      logs = Log.find_by(event_items_id: object.id)
+      logs.sum(:diff_count) unless logs.nil?
     end
   end
 end
