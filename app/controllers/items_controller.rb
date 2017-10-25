@@ -1,6 +1,6 @@
 class ItemsController < ApplicationController
   def show
-    @item = Item.find(params[:item_id])
+    @item = Item.find(params[:id])
     render json: @item
   end
 end
