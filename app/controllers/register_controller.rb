@@ -1,5 +1,7 @@
 class RegisterController < ApplicationController
   def create
+    client = get_client
+    client.update("残り5個です！#{rand(1000)}")
     json_request = JSON.parse(request.body.read)
     items = json_request["items"]
     if items.nil?
@@ -17,6 +19,16 @@ class RegisterController < ApplicationController
       rescue
         render status: :bad_request
       end
+    end
+  end
+  
+private
+  def get_client
+    Twitter::REST::Client.new do |config|
+      config.consumer_key         = ENV['TWITTER_CONSUMER_KEY']
+      config.consumer_secret      = ENV['TWITTER_CONSUMER_SECRET']
+      config.access_token         = ENV['TWITTER_ACCESS_TOKEN']
+      config.access_token_secret  = ENV['TWITTER_ACCESS_TOKEN_SECRET']
     end
   end
 end
