@@ -17,8 +17,12 @@ class EventSerializer < ActiveModel::Serializer
     end
 
     def count
-      logs = Log.find_by(event_item_id: object.id)
-      logs.sum(:diff_count) unless logs.nil?
+      logs = Log.where(event_item_id: object.id)
+      if logs.empty?
+        nil
+      else
+        logs.sum(:diff_count)
+      end
     end
   end
 end
