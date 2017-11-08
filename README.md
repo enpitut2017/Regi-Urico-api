@@ -21,7 +21,7 @@
 
 ## URL
 
-- アプリ: 
+- アプリ: http://210.140.221.144/
 - タスクボード: https://trello.com/b/h1uiYFdg/task-board
 
 ## Member
