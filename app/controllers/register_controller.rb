@@ -20,7 +20,7 @@ class RegisterController < ApplicationController
           render status: :created
         end
       rescue => e
-        p e
+        logger.error e
         render status: :bad_request
       end
     end
