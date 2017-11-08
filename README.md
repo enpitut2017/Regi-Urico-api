@@ -20,8 +20,8 @@
 他の個人事業主向けの在庫管理アプリに比べて、購入者への通知の自動化、時間単位の売り上げの可視化・購入者との共有ができる、という優位性があります。
 
 ## URL
-
-- アプリ: 
+-Twitter: https://twitter.com/nearbuy_enpit17
+- アプリ:  http://210.140.221.144/
 - タスクボード: https://trello.com/b/h1uiYFdg/task-board
 
 ## Member
