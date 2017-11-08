@@ -13,8 +13,4 @@
 /tmp/*
 !/log/.keep
 !/tmp/.keep
-/Vagrantfile
-/.vagrant/Users/mizuno/Downloads/schema.rb.swp 
-/.vagrant/
-/.rbenv
 .byebug_history
