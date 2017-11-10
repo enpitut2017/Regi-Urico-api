@@ -2,7 +2,7 @@
 lock "~> 3.10.0"
 
 set :application, "Regi-Urico-api"
-set :repo_url, "git@github.com:enpitut2017/Regi-Urico-api.git"
+set :repo_url, "https://github.com/enpitut2017/Regi-Urico-api.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
