@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  get 'items/:id', to: 'items#show'
+  resources :items, only: [:show, :new]
   get 'events/:id', to: 'events#show'
   post 'register/', to: 'register#create'
 
