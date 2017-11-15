@@ -10,11 +10,15 @@ class ItemsController < ApplicationController
   end
 
   def create
+    # TODO: 例外処理のフォーマットが決まったらそれに追従するようにエラー処理を書く
     json_request = JSON.parse(request.body.read)
+    price = json_request['price']
     event_id = json_request['event_id']
     seller_id = json_request['seller_id']
     item_name = json_request['name']
+    first_count = json_request['first_count']
     item = Item.new(name: item_name, seller_id: seller_id)
-    EventItem.create(item: item, event_id: event_id) if item.save
+    event_item = EventItem.create(item: item, price: price, event_id: event_id)
+    event_item.logs.create(diff_count: first_count)
   end
 end
