@@ -49,6 +49,7 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     arel (8.0.0)
     ast (2.3.0)
+    bcrypt (3.1.11)
     buftok (0.2.0)
     builder (3.2.3)
     byebug (9.1.0)
@@ -269,6 +270,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers
+  bcrypt (~> 3.1.7)
   byebug
   capistrano
   capistrano-bundler
