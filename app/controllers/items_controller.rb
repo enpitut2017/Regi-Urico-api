@@ -21,4 +21,10 @@ class ItemsController < ApplicationController
     event_item = EventItem.create(item: item, price: price, event_id: event_id)
     event_item.logs.create(diff_count: first_count)
   end
+
+  def destroy
+    item_id = params[:id]
+    EventItem.where(item_id: item_id).destroy_all
+    Item.find_by(id: item_id).destroy
+  end
 end
