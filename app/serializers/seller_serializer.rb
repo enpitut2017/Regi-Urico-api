@@ -1,3 +1,3 @@
 class SellerSerializer < ActiveModel::Serializer
-  attributes :id, :name
+  attributes :id, :name, :token
 end
