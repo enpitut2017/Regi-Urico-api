@@ -6,8 +6,8 @@ class RegisterController < ApplicationController
       render status: :bad_request
     else
       begin
+        tweet = ""
         ActiveRecord::Base.transaction do
-          tweet = ""
           items.each do |item|
             event_item = EventItem.find_by(event_id: json_request["event_id"], item_id: item["id"])
             raise ArgumentError if event_item.nil?
@@ -15,10 +15,11 @@ class RegisterController < ApplicationController
             item = Item.find(item["id"])
             tweet << "\n" << "#{item.seller.name}様の「#{item.name}」は残り#{event_item.logs.sum(:diff_count)}個になりました！"
           end
-          client = get_client
-          client.update!(tweet)
-          render status: :created
+          @event = Event.find(json_request["event_id"])
         end
+        client = get_client
+        client.update!(tweet)
+        render json: @event, include: {event_items: :item}, status: :created
       rescue => e
         logger.error e
         render status: :bad_request
