@@ -23,8 +23,8 @@ class ItemsController < ApplicationController
   end
 
   def destroy
-    item_id = params[:id]
-    EventItem.where(item_id: item_id).destroy_all
-    Item.find_by(id: item_id).destroy
+    item_id = params[:item_id]
+    event_id = params[:event_id]
+    EventItem.where(item_id: item_id, event_id: event_id).destroy_all
   end
 end
