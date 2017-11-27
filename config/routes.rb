@@ -3,4 +3,5 @@ Rails.application.routes.draw do
   resources :events, only: [:show, :create]
   resources :register, only: [:create]
   delete '/event_items', to: 'event_items#destroy'
+  resources :sellers, only: [:create]
 end
