@@ -10,16 +10,16 @@ Item.delete_all
 EventItem.delete_all
 Seller.delete_all
 
-s1 = Seller.create!(name: 'ほげ茶')
-s2 = Seller.create!(name: 'nullpo')
-s3 = Seller.create!(name: 'foo@tara')
-s4 = Seller.create!(name: '熱田盛子')
-s5 = Seller.create!(name: 'ぼんJIN')
-s6 = Seller.create!(name: 'CHRONICLE of Tears')
-s7 = Seller.create!(name: '暇人 THE future')
-s8 = Seller.create!(name: 'こっこ')
-s9 = Seller.create!(name: 'eバラ')
-s10 = Seller.create!(name: '洒蘭・Do')
+s1 = Seller.create!(name: 'ほげ茶', password: 'password')
+s2 = Seller.create!(name: 'nullpo', password: 'password')
+s3 = Seller.create!(name: 'foo@tara', password: 'password')
+s4 = Seller.create!(name: '熱田盛子', password: 'password')
+s5 = Seller.create!(name: 'ぼんJIN', password: 'password')
+s6 = Seller.create!(name: 'CHRONICLE of Tears', password: 'password')
+s7 = Seller.create!(name: '暇人 THE future', password: 'password')
+s8 = Seller.create!(name: 'こっこ', password: 'password')
+s9 = Seller.create!(name: 'eバラ', password: 'password')
+s10 = Seller.create!(name: '洒蘭・Do', password: 'password')
 
 touhou = s1.events.create!(name: '東方紅楼夢(第13回)')
 comcity = s1.events.create!(name: 'COMIC CITY 大阪112')
