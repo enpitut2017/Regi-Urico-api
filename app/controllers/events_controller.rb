@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   def index
-    seller = current_seller(request.headers['HTTP_X_SELLER_TOKEN'])
+    seller = current_seller(request.headers['HTTP_X_AUTHRIZED_TOKEN'])
     unless seller
       render json: { errors: 'Unauthrized' }
     else
@@ -23,7 +23,7 @@ class EventsController < ApplicationController
   end
 
   private
-  
+
   def current_seller(token)
     seller = Seller.find_by(token: token)
     if seller
