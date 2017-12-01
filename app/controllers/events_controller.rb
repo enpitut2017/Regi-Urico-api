@@ -26,6 +26,21 @@ class EventsController < ApplicationController
     end
   end
 
+  def update
+    seller = current_seller(request.headers['HTTP_X_AUTHORIZED_TOKEN'])
+    unless seller
+      render json: { errors: 'Unauthorized'}
+    else
+      json_request = JSON.parse(request.body.read)
+      @event = Event.find(json_request['event_id'])
+      @event.update_attribute(:name, json_request['name'])
+      render json: {
+          id: @event.id,
+          name: @event.name,
+      }
+    end
+  end
+
   def show
     @event = Event.find(params[:id])
     render json: @event, include: {event_items: :item}
