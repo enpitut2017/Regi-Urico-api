@@ -19,7 +19,10 @@ class EventsController < ApplicationController
           name: json_request['name'],
           seller_id: seller.id,
       )
-      render json: @event
+      render json: {
+          id: @event.id,
+          name: @event.name,
+      }
     end
   end
 
