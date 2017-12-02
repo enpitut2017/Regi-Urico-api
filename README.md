@@ -35,6 +35,24 @@
 
 # API ドキュメント
 
+## Table of Contents
+
+* 販売者
+  * [POST [/sellers]](#post-sellers)
+  * [POST [/signin]](#post-signin)
+* Event
+  * [GET [/events]](#get-events)
+  * [POST [/events]](#post-events)
+  * [PATCH [/events]](#patch-events)
+  * [DELETE [/events]](#delete-events)
+* Event Item
+  * [GET [/event\_items/:event\_id]](#get-event_itemsevent_id)
+  * [PATCH [/event\_items]](#patch-event_items)
+  * [DELETE [/event\_items]](#delete-event_items)
+  * [POST [/event\_items]](#post-event_items)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
+
 ## POST [/sellers]
 
 販売者を新規登録する。
