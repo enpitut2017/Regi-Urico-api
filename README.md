@@ -35,8 +35,6 @@
 
 # API ドキュメント
 
-# API 説明
-
 ## POST [/sellers]
 
 販売者を新規登録する。
@@ -45,9 +43,9 @@
 
 ```json
 {
-	"name": "kajyuuen",
-	"password": "password",
-	"password_confirmation": "password"
+    "name": "kajyuuen",
+    "password": "password",
+    "password_confirmation": "password"
 }
 ```
 
@@ -86,8 +84,8 @@
 
 ```json
 {
-	"name": "kajyuuen",
-	"password": "password",
+    "name": "kajyuuen",
+    "password": "password",
 }
 ```
 
@@ -312,7 +310,7 @@ HTTP 404 Not Found
 
 ```json
 {
-    items: []
+    "items": []
 }
 ```
 
