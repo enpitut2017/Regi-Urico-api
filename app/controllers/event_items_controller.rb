@@ -90,6 +90,12 @@ class EventItemsController < ApplicationController
   end
 
   def event_items(event_id)
+    # event_id が @seller が所有しているものか確認する
+    event = Event.find(event_id)
+    if event && event.seller_id != @seller.id
+      return []
+    end
+
     items = []
     EventItem.where(event_id: event_id).each do |event_item|
       item = {
