@@ -1,18 +1,37 @@
 class EventItemsController < ApplicationController
   def create
-    json_request = JSON.parse(request.body.read)
-    item = Item.new(name: json_request['item_name'], seller_id: json_request['seller_id'])
-    if item.valid?
-      item.save
-      event_item = EventItem.new(
-        event_id: json_request['event_id'],
-        item_id: item.id,
-        price: json_request['price']
-      )
-      if event_item.valid?
-        event_item.save
-        log = event_item.logs.create(diff_count: json_request['count'])
+    seller = current_seller(request.headers['HTTP_X_AUTHORIZED_TOKEN'])
+    unless seller
+      render json: {errors: 'Unauthorized'}
+    else
+      json_request = JSON.parse(request.body.read)
+
+      # itemの作成
+      item = Item.create(name: json_request['item_name'], seller_id: seller.id)
+      p '!!! item:', item
+      if item.valid? # => true
+        p 'item valid'
+      else
+        p 'item invalid!'
       end
+
+      # event_itemの作成
+      event_item = EventItem.create(
+          event_id: json_request['event_id'],
+          item_id: item.id,
+          price: json_request['price']
+      )
+      p '!!! event_item:', event_item
+      if event_item.valid? # => false
+        p 'event_item is valid'
+      else
+        p 'event_item is invalid!'
+      end
+
+      # logの作成
+      log = event_item.logs.create(event_item_id: event_item.id, diff_count: json_request['count'])
+
+      render json: {items: Item.where(seller_id: seller.id)}
     end
   end
 
@@ -27,4 +46,14 @@ class EventItemsController < ApplicationController
     end
   end
 
+  private
+
+  def current_seller(token)
+    seller = Seller.find_by(token: token)
+    if seller
+      seller
+    else
+      false
+    end
+  end
 end
