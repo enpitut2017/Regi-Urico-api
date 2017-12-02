@@ -272,8 +272,8 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ```json
 {
-    "event_id": 1,
-    "item_id": 2,
+    "event_id": 1,
+    "item_id": 2,
     "price": 10000,
     "name": "新しい本のタイトル"
 }
