@@ -1,6 +1,16 @@
 class EventItemsController < ApplicationController
   before_action :current_seller
 
+  def show
+    event_id = params[:id]
+    items = event_items(event_id)
+    if items.empty?
+      render json: {items: []}, status: :not_found
+    else
+      render json: {items: items}
+    end
+  end
+
   def create
     json_request = JSON.parse(request.body.read)
     event_id = json_request['event_id']
