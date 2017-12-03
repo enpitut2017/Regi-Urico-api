@@ -518,7 +518,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 ```json
 {
     "event_id": 1,
-    items: [
+    "items": [
         {
             "id": 1,
             "name": "Book1",
