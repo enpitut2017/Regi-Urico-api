@@ -8,8 +8,20 @@ class SessionsController < ApplicationController
     end
   end
 
+  def callback
+    auth = auth_hash
+    token = auth.credentials.token
+    secret = auth.credentials.secret
+    p token, secret
+  end
+
   private
+
   def login_params
     params.permit(:name, :password)
+  end
+
+  def auth_hash
+    request.env['omniauth.auth']
   end
 end

@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   delete '/event_items', to: 'event_items#destroy'
   resources :sellers, only: [:create]
   post  '/signin',  to: 'sessions#new'
+  get '/auth/:provider/callback', to: 'sessions#callback'
 end
