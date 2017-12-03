@@ -80,7 +80,7 @@
 
 ## POST [/signin]
 
-登録済みの販売者でサインインして、トークンを取得する。
+登録済みの販売者でサインインして、トークンと Twitter アカウント情報を取得する。
 
 ### request
 
@@ -100,6 +100,9 @@
     "id": 13,
     "name": "kajyuuen",
     "token": "a2jU5ZFtHxvNEdmdXCQkHTgT"
+    "twitter_name": "果樹園",
+    "twitter_screen_name": "nearbuy_enpit17",
+    "twitter_image_url": "http://abs.twimg.com/sticky/default_profile_images/default_profile.png"
 }
 ```
 
