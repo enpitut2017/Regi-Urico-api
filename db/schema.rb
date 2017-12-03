@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171127044256) do
+ActiveRecord::Schema.define(version: 20171203172412) do
 
   create_table "event_items", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "price"
@@ -52,6 +52,12 @@ ActiveRecord::Schema.define(version: 20171127044256) do
     t.datetime "updated_at", null: false
     t.string "password_digest"
     t.string "token"
+    t.bigint "twitter_id"
+    t.string "twitter_name"
+    t.string "twitter_screen_name"
+    t.string "twitter_image_url"
+    t.string "twitter_token"
+    t.string "twitter_secret"
   end
 
   add_foreign_key "events", "sellers"
