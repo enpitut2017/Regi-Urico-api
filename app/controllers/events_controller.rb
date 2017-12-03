@@ -26,11 +26,6 @@ class EventsController < ApplicationController
     end
   end
 
-  def show
-    @event = Event.find(params[:id])
-    render json: @event, include: {event_items: :item}
-  end
-
   private
 
   def current_seller(token)

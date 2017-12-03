@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-  resources :items, only: [:show, :new, :create]
-  resources :events, only: [:index, :show, :create]
+  resources :events, only: [:index, :create]
   resources :register, only: [:create]
   resources :event_items, only: [:show, :create]
   patch '/event_items', to: 'event_items#update'
