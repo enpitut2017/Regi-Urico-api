@@ -26,8 +26,21 @@ class RegisterController < ApplicationController
           @event = Event.find(json_request['event_id'])
         end
         client = get_client
+        will_continue = "（続く）"
+        did_continue = "（続き）"
+        tweet_max_size = 140
         tweets.each do |tweet|
-          client.update!(tweet)
+          first_tweet = true
+          while did_continue.size * (first_tweet ? 0 : 1) + tweet.size > tweet_max_size
+            if first_tweet
+              sliced_tweet = tweet.slice!(0, 140 - will_continue.size) + will_continue
+              first_tweet = false
+            else
+              sliced_tweet = did_continue + tweet.slice!(0, 140 - did_continue.size - will_continue.size) + will_continue
+            end
+            client.update!(sliced_tweet)
+          end
+          client.update!(did_continue * (first_tweet ? 0 : 1) + tweet)
         end
         render json: @event, include: {event_items: :item}, status: :created
       rescue => e
