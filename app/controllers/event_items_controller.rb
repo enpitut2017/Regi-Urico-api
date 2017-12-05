@@ -27,18 +27,31 @@ class EventItemsController < ApplicationController
       return render json: {'errors': e}, status: :bad_request
     end
 
-    items = []
-    EventItem.where(event_id: event_id).each do |event_item|
-      item = {
-          event_id: event_id,
-          item_id: event_item.item_id,
-          name: Item.find(event_item.item_id).name,
-          price: event_item.price,
-          count: event_item.logs.pluck(:diff_count).sum,
-      }
-      items.push(item)
-    end
+    items = event_items(event_id)
     render json: {items: items}
+  end
+
+  def update
+    json_request = JSON.parse(request.body.read)
+    item_id = json_request['item_id']
+    event_id = json_request['event_id']
+    event_item = EventItem.find_by(item_id: item_id, event_id: event_id)
+
+    # event_itemの更新
+    if event_item
+      name = json_request['name'] || Item.find(event_item.item_id).name
+      price = json_request['price'] || event_item.price
+      event_item.update(price: price)
+      Item.find(event_item.item_id).update(name: name)
+    end
+
+    items = event_items(event_id)
+
+    if event_item
+      render json: {items: items}
+    else # 指定されたアイテムが存在しなかった場合、最新のitemsとともに404(not found)を返す
+      render json: {items: items}, status: :not_found
+    end
   end
 
   def destroy
@@ -49,18 +62,7 @@ class EventItemsController < ApplicationController
     # event_itemの削除
     result = EventItem.where(item_id: item_id, event_id: event_id).destroy_all
 
-    items = []
-    EventItem.where(event_id: event_id).each do |event_item|
-      pp event_item
-      item = {
-          item_id: event_item.item_id,
-          event_id: event_item.event_id,
-          name: Item.find(event_item.item_id).name,
-          price: event_item.price,
-          count: event_item.logs.pluck(:diff_count).sum,
-      }
-      items.push(item)
-    end
+    items = event_items(event_id)
     if result.empty? # アイテムが何も削除されなかったなら、最新のitemsとともに404(not found)を返す
       render json: {items: items}, status: :not_found
     else # アイテムが削除されたら、最新のitemsを返す
@@ -75,5 +77,20 @@ class EventItemsController < ApplicationController
     unless @seller
       render json: {errors: 'Unauthorized'}, status: :unauthorized
     end
+  end
+
+  def event_items(event_id)
+    items = []
+    EventItem.where(event_id: event_id).each do |event_item|
+      item = {
+          item_id: event_item.item_id,
+          event_id: event_item.event_id,
+          name: Item.find(event_item.item_id).name,
+          price: event_item.price,
+          count: event_item.logs.pluck(:diff_count).sum,
+      }
+      items.push(item)
+    end
+    return items
   end
 end
