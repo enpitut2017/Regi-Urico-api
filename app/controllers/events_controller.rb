@@ -33,11 +33,17 @@ class EventsController < ApplicationController
     else
       json_request = JSON.parse(request.body.read)
       @event = Event.find(json_request['event_id'])
-      @event.update_attribute(:name, json_request['name'])
-      render json: {
-          id: @event.id,
-          name: @event.name,
-      }
+      if @event.seller == seller
+        # イベントの所有者はトークンを持つカレントユーザと同一なので、更新を許可
+        @event.update_attribute(:name, json_request['name'])
+        render json: {
+            id: @event.id,
+            name: @event.name,
+        }
+      else
+        # イベントの所有者以外が更新しようとしているので、403: Forbiddenを返す
+        render status: :forbidden
+      end
     end
   end
 
@@ -48,15 +54,21 @@ class EventsController < ApplicationController
     else
       json_request = JSON.parse(request.body.read)
       @event = Event.find(json_request['event_id'])
-      @event.destroy
+      if @event.seller == seller
+        # イベントの所有者はトークンを持つカレントユーザと同一なので、削除を許可
+        @event.destroy
 
-      # 最後に更新されたイベントを返す
-      @event = Event.order('updated_at desc').first
+        # 最後に更新されたイベントを返す
+        @event = Event.order('updated_at desc').first
 
-      render json: {
-          id: @event.id,
-          name: @event.name,
-      }
+        render json: {
+            id: @event.id,
+            name: @event.name,
+        }
+      else
+        # イベントの所有者以外が削除しようとしているので、403: Forbiddenを返す
+        render status: :forbidden
+      end
     end
   end
 
