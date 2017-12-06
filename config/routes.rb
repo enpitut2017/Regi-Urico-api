@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   delete '/event_items', to: 'event_items#destroy'
   resources :sellers, only: [:create]
   post  '/signin',  to: 'sessions#new'
+  get '/events/sales_log/:id', to: 'events#sales_log'
 end

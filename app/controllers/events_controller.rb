@@ -77,6 +77,35 @@ class EventsController < ApplicationController
     render json: @event, include: {event_items: :item}
   end
 
+  def sales_log
+    seller = current_seller(request.headers['HTTP_X_AUTHORIZED_TOKEN'])
+    unless seller
+      render json: { errors: 'Unauthorized'}
+    else
+      @event = Event.find(params[:id])
+      if @event.seller == seller
+        # イベントの所有者はトークンを持つカレントユーザと同一なので、ログ出力を許可
+        items = @event.event_items
+        rets = []
+        sales = 0
+        items.each do |item|
+          subcounts = -item.logs.where("diff_count < 0").sum(:diff_count)
+          subsales = subcounts * item.price
+          sales += subsales
+          rets.push({
+            id: item.id,
+            subcount: subcounts,
+            subsales: subsales
+          })
+        end
+        return render json: {sales: sales, items: rets}
+      else
+        # イベントの所有者以外がログ出力しようとしているので、403: Forbiddenを返す
+        render status: :forbidden
+      end
+    end
+  end
+
   private
 
   def current_seller(token)
