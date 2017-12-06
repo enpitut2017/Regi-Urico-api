@@ -14,6 +14,14 @@ class EventItemsController < ApplicationController
   def create
     json_request = JSON.parse(request.body.read)
     event_id = json_request['event_id']
+    event = Event.find_by(id: event_id)
+    if event.nil?
+      # イベントが存在しない
+      return render json: {'errors': 'Event is not found.'}, status: :not_found
+    elsif event.seller != @seller
+      # イベントの所有者がトークンの所有者と異なる
+      return render json: {errors: 'Permission denied'}, status: :forbidden
+    end
     price = json_request['price']
     name = json_request['name']
     count = json_request['count']
@@ -45,6 +53,19 @@ class EventItemsController < ApplicationController
     json_request = JSON.parse(request.body.read)
     item_id = json_request['item_id']
     event_id = json_request['event_id']
+    item = Item.find_by(id: item_id)
+    event = Event.find_by(id: event_id)
+    if item.nil? || event.nil?
+      # アイテムかイベントが存在しない
+      errors = []
+      errors.push('Item is not found.') if item.nil?
+      errors.push('Event is not found.') if event.nil?
+      return render json: {'errors': errors}, status: :not_found
+    end
+    if item.seller != @seller || event.seller != @seller
+      # アイテムかイベントの所有者がトークンの所有者と異なる
+      return render json: {errors: 'Permission denied'}, status: :forbidden
+    end
     event_item = EventItem.find_by(item_id: item_id, event_id: event_id)
 
     # event_itemの更新
@@ -68,7 +89,19 @@ class EventItemsController < ApplicationController
     json_request = JSON.parse(request.body.read)
     item_id = json_request['item_id']
     event_id = json_request['event_id']
-
+    item = Item.find_by(id: item_id)
+    event = Event.find_by(id: event_id)
+    if item.nil? || event.nil?
+      # アイテムかイベントが存在しない
+      errors = []
+      errors.push('Item is not found.') if item.nil?
+      errors.push('Event is not found.') if event.nil?
+      return render json: {'errors': errors}, status: :not_found
+    end
+    if item.seller != @seller || event.seller != @seller
+      # アイテムかイベントの所有者がトークンの所有者と異なる
+      return render json: {errors: 'Permission denied'}, status: :forbidden
+    end
     # event_itemの削除
     result = EventItem.where(item_id: item_id, event_id: event_id).destroy_all
 
