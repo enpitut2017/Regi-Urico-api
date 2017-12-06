@@ -451,7 +451,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
     "event_id": 4,
     "price": 10000,
     "count": 200,
-    "item_name": "高級ブック"
+    "name": "高級ブック"
 }
 ```
 
