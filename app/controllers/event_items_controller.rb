@@ -15,13 +15,13 @@ class EventItemsController < ApplicationController
     json_request = JSON.parse(request.body.read)
     event_id = json_request['event_id']
     price = json_request['price']
-    item_name = json_request['item_name']
+    name = json_request['name']
     count = json_request['count']
 
     begin
       ActiveRecord::Base.transaction do
         # itemの作成
-        item = Item.create!(name: item_name, seller_id: @seller.id)
+        item = Item.create!(name: name, seller_id: @seller.id)
 
         # event_itemの作成
         event_item = EventItem.create!(
