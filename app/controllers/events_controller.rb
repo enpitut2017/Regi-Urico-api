@@ -73,8 +73,17 @@ class EventsController < ApplicationController
   end
 
   def show
-    @event = Event.find(params[:id])
-    render json: @event, include: {event_items: :item}
+    seller = current_seller(request.headers['HTTP_X_AUTHORIZED_TOKEN'])
+    unless seller
+      render json: { errors: 'Unauthorized'}
+    else
+      id = params[:id]
+      unless Seller.first.events.ids.include?(id)
+        render status: :not_found
+      end
+      @event = Event.find(id)
+      render json: @event, include: {event_items: :item}
+    end
   end
 
   private
