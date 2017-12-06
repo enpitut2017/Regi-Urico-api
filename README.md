@@ -507,3 +507,75 @@ HTTP 401 Unauthorised
     "errors": "Unauthorized"
 }
 ```
+
+## POST [/register]
+
+レジで商品が購入された時、商品在庫数の増減を登録します。
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
+```
+
+
+```json
+{
+    "event_id": 1,
+    "items": [
+        {
+            "id": 1,
+            "name": "Book1",
+            "count": 3
+        },
+        {
+            "id": 2,
+            "name": "Book2",
+            "count": 5
+        },
+    ]
+}
+```
+
+### response
+
+登録に成功した場合、登録後の最新のアイテムリストが返ります。
+
+```
+HTTP 201 Created
+```
+
+```json
+{
+    "id": 1,
+    "name": "イベント名",
+    "event_items": [
+        {
+            "price": 1400,
+            "item_id": 1,
+            "name": "Book1",
+            "count": 19,
+            "diff_count": 0
+        },
+        {
+            "price": 600,
+            "item_id": 2,
+            "name": "Book2",
+            "count": 28,
+            "diff_count": 0
+        }
+    ]
+}
+```
+
+指定したアイテムが存在しない、または他人のアイテムだった場合
+
+```
+HTTP 400 Bad Request
+```
+
+```json
+{
+    "errors": "there is no such item, event_id: 999, item_id: 777"
+}
+```
