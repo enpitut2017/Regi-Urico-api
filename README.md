@@ -39,7 +39,23 @@
 
 # API ドキュメント
 
-# API 説明
+## Table of Contents
+
+* 販売者
+  * [POST [/sellers]](#post-sellers)
+  * [POST [/signin]](#post-signin)
+* Event
+  * [GET [/events]](#get-events)
+  * [POST [/events]](#post-events)
+  * [PATCH [/events]](#patch-events)
+  * [DELETE [/events]](#delete-events)
+* Event Item
+  * [GET [/event\_items/:event\_id]](#get-event_itemsevent_id)
+  * [PATCH [/event\_items]](#patch-event_items)
+  * [DELETE [/event\_items]](#delete-event_items)
+  * [POST [/event\_items]](#post-event_items)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 
 ## POST [/sellers]
 
@@ -49,9 +65,9 @@
 
 ```json
 {
-	"name": "kajyuuen",
-	"password": "password",
-	"password_confirmation": "password"
+    "name": "kajyuuen",
+    "password": "password",
+    "password_confirmation": "password"
 }
 ```
 
@@ -90,8 +106,8 @@
 
 ```json
 {
-	"name": "kajyuuen",
-	"password": "password",
+    "name": "kajyuuen",
+    "password": "password",
 }
 ```
 
@@ -263,6 +279,75 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
     "errors": "Unauthorized"
 }
 ```
+
+## GET [/event_items/:event_id]
+
+指定したイベントのアイテムリストを取得する。
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
+```
+
+```
+/event_items/1
+/event_items/999 # 存在しない event_id の場合
+```
+
+### response
+
+イベントが存在する場合、最新のアイテム一覧が返ってきます。
+
+```
+HTTP 200 OK
+```
+
+```json
+{
+    "items": [
+        {
+            "item_id": 1,
+            "event_id": 1,
+            "name": "1",
+            "price": 1400,
+            "count": 100
+        },
+        {
+            "item_id": 2,
+            "event_id": 1,
+            "name": "新しい本のタイトル",
+            "price": 10000,
+            "count": 20
+        }
+    ]
+}
+```
+
+指定したイベントが存在しなかった場合、または指定したイベントが自分のものでなかった場合、HTTP 404とともに、空のアイテムリストが返ります。
+
+```
+HTTP 404 Not Found
+```
+
+```json
+{
+    "items": []
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorised
+```
+
+```json
+{
+    "errors": "Unauthorized"
+}
+```
+
 
 ## PATCH [/event_items]
 
