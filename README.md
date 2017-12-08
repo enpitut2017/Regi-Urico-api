@@ -22,7 +22,11 @@
 ## URL
 - Twitter: https://twitter.com/nearbuy_enpit17
 - アプリ:  http://210.140.221.144/
-- タスクボード: https://trello.com/b/h1uiYFdg/task-board
+- タスクボード: 
+  - -10/25 https://trello.com/b/h1uiYFdg/task-board
+  - 10/27- https://trello.com/b/h1uiYFdg/task-board-10-27
+  - 11/10- https://trello.com/b/bZkIE7zu/task-board-11-10
+  - 11/27- https://trello.com/b/j2ztJ1Gq/task-board-11-27
 
 ## Member
 
@@ -35,7 +39,23 @@
 
 # API ドキュメント
 
-# API 説明
+## Table of Contents
+
+* 販売者
+  * [POST [/sellers]](#post-sellers)
+  * [POST [/signin]](#post-signin)
+* Event
+  * [GET [/events]](#get-events)
+  * [POST [/events]](#post-events)
+  * [PATCH [/events]](#patch-events)
+  * [DELETE [/events]](#delete-events)
+* Event Item
+  * [GET [/event\_items/:event\_id]](#get-event_itemsevent_id)
+  * [PATCH [/event\_items]](#patch-event_items)
+  * [DELETE [/event\_items]](#delete-event_items)
+  * [POST [/event\_items]](#post-event_items)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 
 ## POST [/sellers]
 
@@ -45,9 +65,9 @@
 
 ```json
 {
-	"name": "kajyuuen",
-	"password": "password",
-	"password_confirmation": "password"
+    "name": "kajyuuen",
+    "password": "password",
+    "password_confirmation": "password"
 }
 ```
 
@@ -80,14 +100,14 @@
 
 ## POST [/signin]
 
-登録済みの販売者でサインインして、トークンと Twitter アカウント情報を取得する。
+登録済みの販売者でサインインして、トークンを取得する。
 
 ### request
 
 ```json
 {
-	"name": "kajyuuen",
-	"password": "password",
+    "name": "kajyuuen",
+    "password": "password",
 }
 ```
 
@@ -100,9 +120,6 @@
     "id": 13,
     "name": "kajyuuen",
     "token": "a2jU5ZFtHxvNEdmdXCQkHTgT"
-    "twitter_name": "果樹園",
-    "twitter_screen_name": "nearbuy_enpit17",
-    "twitter_image_url": "http://abs.twimg.com/sticky/default_profile_images/default_profile.png"
 }
 ```
 
@@ -262,6 +279,75 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
     "errors": "Unauthorized"
 }
 ```
+
+## GET [/event_items/:event_id]
+
+指定したイベントのアイテムリストを取得する。
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
+```
+
+```
+/event_items/1
+/event_items/999 # 存在しない event_id の場合
+```
+
+### response
+
+イベントが存在する場合、最新のアイテム一覧が返ってきます。
+
+```
+HTTP 200 OK
+```
+
+```json
+{
+    "items": [
+        {
+            "item_id": 1,
+            "event_id": 1,
+            "name": "1",
+            "price": 1400,
+            "count": 100
+        },
+        {
+            "item_id": 2,
+            "event_id": 1,
+            "name": "新しい本のタイトル",
+            "price": 10000,
+            "count": 20
+        }
+    ]
+}
+```
+
+指定したイベントが存在しなかった場合、または指定したイベントが自分のものでなかった場合、HTTP 404とともに、空のアイテムリストが返ります。
+
+```
+HTTP 404 Not Found
+```
+
+```json
+{
+    "items": []
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorised
+```
+
+```json
+{
+    "errors": "Unauthorized"
+}
+```
+
 
 ## PATCH [/event_items]
 
@@ -450,7 +536,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
     "event_id": 4,
     "price": 10000,
     "count": 200,
-    "item_name": "高級ブック"
+    "name": "高級ブック"
 }
 ```
 
@@ -504,5 +590,77 @@ HTTP 401 Unauthorised
 ```json
 {
     "errors": "Unauthorized"
+}
+```
+
+## POST [/register]
+
+レジで商品が購入された時、商品在庫数の増減を登録します。
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
+```
+
+
+```json
+{
+    "event_id": 1,
+    "items": [
+        {
+            "id": 1,
+            "name": "Book1",
+            "count": 3
+        },
+        {
+            "id": 2,
+            "name": "Book2",
+            "count": 5
+        },
+    ]
+}
+```
+
+### response
+
+登録に成功した場合、登録後の最新のアイテムリストが返ります。
+
+```
+HTTP 201 Created
+```
+
+```json
+{
+    "id": 1,
+    "name": "イベント名",
+    "event_items": [
+        {
+            "price": 1400,
+            "item_id": 1,
+            "name": "Book1",
+            "count": 19,
+            "diff_count": 0
+        },
+        {
+            "price": 600,
+            "item_id": 2,
+            "name": "Book2",
+            "count": 28,
+            "diff_count": 0
+        }
+    ]
+}
+```
+
+指定したアイテムが存在しない、または他人のアイテムだった場合
+
+```
+HTTP 400 Bad Request
+```
+
+```json
+{
+    "errors": "there is no such item, event_id: 999, item_id: 777"
 }
 ```

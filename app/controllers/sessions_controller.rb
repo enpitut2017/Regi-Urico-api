@@ -17,7 +17,6 @@ class SessionsController < ApplicationController
 
   def callback
     current_seller
-    render json: {errors: 'Unauthorized'}, status: :unauthorized unless @seller
     auth = auth_hash
     twitter_info = {
         twitter_token: auth.credentials.token,
