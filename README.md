@@ -152,6 +152,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 作成成功
 
+```
+HTTP 200 OK
+```
+
 ```json
 {
     "event": [
@@ -167,6 +171,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 ```
 
 作成失敗
+
+```
+HTTP 401 Unauthorized
+```
 
 ```json
 {
@@ -194,6 +202,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 作成成功
 
+```
+HTTP 200 OK
+```
+
 ```json
 {
     "id": 12,
@@ -202,6 +214,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 ```
 
 作成失敗
+
+```
+HTTP 401 Unauthorized
+```
 
 ```json
 {
@@ -230,6 +246,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 作成成功
 
+```
+HTTP 200 OK
+```
+
 ```json
 {
     "id": 13,
@@ -238,6 +258,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 ```
 
 作成失敗
+
+```
+HTTP 401 Unauthorized
+```
 
 ```json
 {
@@ -265,6 +289,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 作成成功
 
+```
+HTTP 200 OK
+```
+
 ```json
 {
     "id": 12,
@@ -273,6 +301,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 ```
 
 作成失敗
+
+```
+HTTP 401 Unauthorized
+```
 
 ```json
 {
