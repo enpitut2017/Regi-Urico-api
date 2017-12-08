@@ -123,7 +123,7 @@ Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 }
 ```
 
-作成失敗
+認証失敗
 
 ```json
 {
@@ -150,8 +150,6 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ### response
 
-作成成功
-
 ```
 HTTP 200 OK
 ```
@@ -170,7 +168,7 @@ HTTP 200 OK
 }
 ```
 
-作成失敗
+認証失敗
 
 ```
 HTTP 401 Unauthorized
@@ -200,8 +198,6 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ### response
 
-作成成功
-
 ```
 HTTP 200 OK
 ```
@@ -213,7 +209,7 @@ HTTP 200 OK
 }
 ```
 
-作成失敗
+認証失敗
 
 ```
 HTTP 401 Unauthorized
@@ -244,8 +240,6 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ### response
 
-作成成功
-
 ```
 HTTP 200 OK
 ```
@@ -257,7 +251,7 @@ HTTP 200 OK
 }
 ```
 
-作成失敗
+認証失敗
 
 ```
 HTTP 401 Unauthorized
@@ -287,8 +281,6 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ### response
 
-作成成功
-
 ```
 HTTP 200 OK
 ```
@@ -300,7 +292,7 @@ HTTP 200 OK
 }
 ```
 
-作成失敗
+認証失敗
 
 ```
 HTTP 401 Unauthorized
