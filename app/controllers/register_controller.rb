@@ -13,8 +13,10 @@ class RegisterController < ApplicationController
         tweets = []
         ActiveRecord::Base.transaction do
           items.each do |item|
+            # 販売数が 0 だった場合は記録せずにスキップする
+            next if item['count'].zero?
             event_item = EventItem.find_by(event_id: json_request['event_id'], item_id: item['id'])
-            if event_item.nil? || ! @seller.events.ids.include?(event_item.event_id)
+            if event_item.nil? || !@seller.events.ids.include?(event_item.event_id)
               raise ArgumentError, "there is no such item, event_id: #{json_request['event_id']}, item_id: #{item['id']}"
             end
 
