@@ -113,7 +113,11 @@ Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 
 ### response
 
-作成成功
+認証成功
+
+```
+HTTP 200 OK
+```
 
 ```json
 {
@@ -123,16 +127,20 @@ Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 }
 ```
 
-作成失敗
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
 
 ```json
 {
     "errors": {
-        "password_confirmation": [
-            "doesn't match Password"
-        ],
         "name": [
-            "has already been taken"
+            "may be incorrect"
+        ],
+        "password": [
+            "may be incorrect"
         ]
     }
 }
