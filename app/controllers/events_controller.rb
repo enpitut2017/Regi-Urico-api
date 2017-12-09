@@ -29,7 +29,7 @@ class EventsController < ApplicationController
   def update
     seller = current_seller(request.headers['HTTP_X_AUTHORIZED_TOKEN'])
     unless seller
-      render json: { errors: 'Unauthorized'}
+      render json: {errors: 'Unauthorized'}
     else
       json_request = JSON.parse(request.body.read)
       @event = Event.find(json_request['event_id'])
