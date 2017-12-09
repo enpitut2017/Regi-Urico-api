@@ -51,9 +51,9 @@
   * [DELETE [/events]](#delete-events)
 * Event Item
   * [GET [/event\_items/:event\_id]](#get-event_itemsevent_id)
+  * [POST [/event\_items]](#post-event_items)
   * [PATCH [/event\_items]](#patch-event_items)
   * [DELETE [/event\_items]](#delete-event_items)
-  * [POST [/event\_items]](#post-event_items)
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 
@@ -75,6 +75,10 @@ Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 
 作成成功
 
+```
+HTTP 201 Created
+```
+
 ```json
 {
     "id": 13,
@@ -84,6 +88,12 @@ Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 ```
 
 作成失敗
+
+
+```
+HTTP 400 Bad Request
+```
+
 
 ```json
 {
@@ -113,7 +123,11 @@ Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 
 ### response
 
-作成成功
+サインイン成功
+
+```
+HTTP 200 OK
+```
 
 ```json
 {
@@ -123,7 +137,11 @@ Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 }
 ```
 
-作成失敗
+サインイン失敗
+
+```
+HTTP 401 Unauthorized
+```
 
 ```json
 {
@@ -150,7 +168,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ### response
 
-作成成功
+取得成功
 
 ```json
 {
@@ -166,7 +184,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 }
 ```
 
-作成失敗
+取得失敗
 
 ```json
 {
@@ -228,7 +246,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ### response
 
-作成成功
+更新成功
 
 ```json
 {
@@ -237,7 +255,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 }
 ```
 
-作成失敗
+更新失敗
 
 ```json
 {
@@ -263,7 +281,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ### response
 
-作成成功
+削除成功
 
 ```json
 {
@@ -272,7 +290,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 }
 ```
 
-作成失敗
+削除失敗
 
 ```json
 {
@@ -339,7 +357,7 @@ HTTP 404 Not Found
 認証失敗
 
 ```
-HTTP 401 Unauthorised
+HTTP 401 Unauthorized
 ```
 
 ```json
@@ -348,6 +366,114 @@ HTTP 401 Unauthorised
 }
 ```
 
+
+## POST [/event_items]
+
+イベントに新しいアイテムを登録する。
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
+```
+
+```json
+{
+    "event_id": 4,
+    "price": 10000,
+    "count": 200,
+    "name": "高級ブック"
+}
+```
+
+### response
+
+登録に成功した場合、登録後の最新のアイテムリストが返ります。
+
+```
+HTTP 200 OK
+```
+
+```json
+{
+    "items": [
+        {
+            "event_id": 4,
+            "item_id": 1,
+            "name": "安い本",
+            "price": 100,
+            "count": 20
+        },
+        {
+            "event_id": 4,
+            "item_id": 2,
+            "name": "高級ブック",
+            "price": 10000,
+            "count": 200
+        }
+    ]
+}
+```
+
+必要な情報不足により作成失敗 (i.e. `item_name`が存在しないなど)
+
+```
+HTTP 400 Bad Request
+```
+
+```json
+{
+    "errors": {
+        "name": [
+            "can't be blank"
+        ]
+    }
+}
+```
+
+イベントが存在しない場合
+
+```
+HTTP 400 Bad Request
+```
+
+```
+{
+    "errors": {
+        "event_id": [
+            "is not found"
+        ]
+    }
+}
+```
+
+他人のイベントの場合
+
+```
+HTTP 404 Forbidden
+```
+
+```
+{
+    "errors": {
+        "event_id": [
+            "is not found"
+        ]
+    }
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": "Unauthorized"
+}
+```
 
 ## PATCH [/event_items]
 
@@ -427,7 +553,7 @@ HTTP 404 Not Found
 認証失敗
 
 ```
-HTTP 401 Unauthorised
+HTTP 401 Unauthorized
 ```
 
 ```json
@@ -512,79 +638,7 @@ HTTP 404 Not Found
 認証失敗
 
 ```
-HTTP 401 Unauthorised
-```
-
-```json
-{
-    "errors": "Unauthorized"
-}
-```
-
-## POST [/event_items]
-
-イベントに新しいアイテムを登録する。
-
-### request
-
-```
-X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
-```
-
-```json
-{
-    "event_id": 4,
-    "price": 10000,
-    "count": 200,
-    "name": "高級ブック"
-}
-```
-
-### response
-
-登録に成功した場合、登録後の最新のアイテムリストが返ります。
-
-```
-HTTP 200 OK
-```
-
-```json
-{
-    "items": [
-        {
-            "event_id": 4,
-            "item_id": 1,
-            "name": "安い本",
-            "price": 100,
-            "count": 20
-        },
-        {
-            "event_id": 4,
-            "item_id": 2,
-            "name": "高級ブック",
-            "price": 10000,
-            "count": 200
-        }
-    ]
-}
-```
-
-必要な情報不足により作成失敗 (i.e. `item_name`が存在しないなど)
-
-```
-HTTP 400 Bad Request
-```
-
-```json
-{
-    "errors": "Validation failed: Name can't be blank"
-}
-```
-
-認証失敗
-
-```
-HTTP 401 Unauthorised
+HTTP 401 Unauthorized
 ```
 
 ```json

@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
     if @seller && @seller.authenticate(login_params[:password])
       render json: @seller
     else
-      render json: { errors: @seller.errors.messages }
+      render json: { errors: @seller.errors.messages }, status: :unauthorized
     end
   end
 
