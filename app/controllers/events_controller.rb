@@ -3,7 +3,7 @@ class EventsController < ApplicationController
 
   def index
     @events = @seller.events
-    render json: { event: @events }
+    render json: { events: @events }
   end
 
   def create
@@ -56,7 +56,6 @@ class EventsController < ApplicationController
 
   def show
     @event = Event.find_by(id: params[:id])
-
     if @event.nil?
       return render json: { errors: 'Event Not Found' }, status: :not_found
     elsif @event.seller != seller
@@ -68,7 +67,10 @@ class EventsController < ApplicationController
     id = params[:id]
 
     unless Seller.first.events.ids.include?(id)
-      render status: :not_found
+      @event = Event.find_by(id: params[:id])
+      if @event.nil?
+        return render json: { errors: 'Event Not Found' }, status: :not_found
+      end
     end
 
     @event = Event.find(id)

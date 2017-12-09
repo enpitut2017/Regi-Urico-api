@@ -156,7 +156,7 @@ HTTP 200 OK
 
 ```json
 {
-    "event": [
+    "events": [
         {
             "id": 9,
             "name": "FULL CODE 5",
@@ -165,6 +165,18 @@ HTTP 200 OK
             "seller_id": 3
         }
     ]
+}
+```
+
+イベントが見つからない
+
+```
+HTTP 404 Not
+```
+
+```json
+{
+     "errors": "Event Not Found" 
 }
 ```
 
@@ -233,7 +245,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ```json
 {
-    "event_id": 13,
+    "id": 13,
     "name": "新しいイベント名"
 }
 ```
@@ -275,7 +287,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ```json
 {
-    "event_id": 13
+    "id": 13
 }
 ```
 
