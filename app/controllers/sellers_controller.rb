@@ -29,7 +29,12 @@ class SellersController < ApplicationController
   end
 
   def destroy
-
+    if @seller.authenticate(seller_params[:password])
+      @seller.destroy
+      render status: :no_content
+    else
+      render json: { errors: {password: ['is incorrect']} }, status: :bad_request
+    end
   end
 
   private

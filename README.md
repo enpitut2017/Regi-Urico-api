@@ -215,6 +215,58 @@ HTTP 401 Unauthorized
 }
 ```
 
+## DELETE [/sellers]
+
+トークンで認証された販売者のアカウントを削除する。
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
+```
+
+```json
+{
+    "password": "password"
+}
+```
+
+### response
+
+削除成功
+
+```
+HTTP 204 No Content
+```
+
+パスワードの不一致による削除失敗
+
+```
+HTTP 400 Bad Request
+```
+
+```json
+{
+    "errors": {
+        "password": ["is incorrect"]
+    }
+}
+```
+
+トークン認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is unauthorized"]
+    }
+}
+```
+
 ## GET [/events]
 
 販売者が作ったイベント一覧を取得する。
