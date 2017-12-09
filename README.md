@@ -25,8 +25,9 @@
 - タスクボード: 
   - -10/25 https://trello.com/b/h1uiYFdg/task-board
   - 10/27- https://trello.com/b/h1uiYFdg/task-board-10-27
-  - 11/10- https://trello.com/b/bZkIE7zu/task-board-11-10
+  - 11/10- https://trello.com/b/bZkIE7zu/task-board-11-10  
   - 11/27- https://trello.com/b/j2ztJ1Gq/task-board-11-27
+  - 12/8- https://trello.com/b/9HLLtp7w/task-board-12-8
 
 ## Member
 
