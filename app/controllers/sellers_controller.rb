@@ -30,6 +30,11 @@ class SellersController < ApplicationController
 
   def destroy
     if @seller.authenticate(seller_params[:password])
+      @seller.events.each do |event|
+        event.event_items.destroy_all
+      end
+      @seller.events.destroy_all
+      @seller.items.destroy_all
       @seller.destroy
       render status: :no_content
     else
