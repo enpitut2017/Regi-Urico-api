@@ -22,7 +22,7 @@
 ## URL
 - Twitter: https://twitter.com/nearbuy_enpit17
 - アプリ:  http://210.140.221.144/
-- タスクボード: 
+- タスクボード:
   - -10/25 https://trello.com/b/h1uiYFdg/task-board
   - 10/27- https://trello.com/b/h1uiYFdg/task-board-10-27
   - 11/10- https://trello.com/b/bZkIE7zu/task-board-11-10  
@@ -143,6 +143,135 @@ HTTP 401 Unauthorized
         "password": [
             "may be incorrect"
         ]
+    }
+}
+```
+
+## PATCH [/sellers]
+
+トークンで認証された販売者のアカウント名やパスワードを変更する。
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
+```
+
+```json
+{
+    "name": "urushiyama",
+    "password": "password"
+}
+```
+
+#### 一部だけを変更する
+
+`name`だけ変えたいときには
+
+```json
+{
+    "name": "urushiyama"
+}
+```
+
+あるいは
+
+```json
+    "name": "urushiyama",
+    "password": ""
+```
+
+`password`についても`name`と同様である。
+
+### response
+
+更新成功
+
+```json
+{
+    "id": 1,
+    "name": "urushiyama",
+    "token": "q2w5ARRr62KEZqGSUGCfzjE6"
+}
+```
+
+更新失敗
+
+```
+HTTP 400 Bad Request
+```
+
+```json
+{
+    "errors": {
+        "name": ["can't be blank"],
+        "password": ["can't be blank"]
+    }
+}
+```
+
+トークン認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is unauthorized"]
+    }
+}
+```
+
+## DELETE [/sellers]
+
+トークンで認証された販売者のアカウントを削除する。
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
+```
+
+```json
+{
+    "password": "password"
+}
+```
+
+### response
+
+削除成功
+
+```
+HTTP 204 No Content
+```
+
+パスワードの不一致による削除失敗
+
+```
+HTTP 400 Bad Request
+```
+
+```json
+{
+    "errors": {
+        "password": ["is incorrect"]
+    }
+}
+```
+
+トークン認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is unauthorized"]
     }
 }
 ```
