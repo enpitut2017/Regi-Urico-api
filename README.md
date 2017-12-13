@@ -56,7 +56,7 @@
   * [DELETE [/event\_items]](#delete-event_items)
   * [POST [/event\_items]](#post-event_items)
 * Sales Log
-  * [GET [/events/sales\_log/:event\_id]](#get-eventmsevent_id)
+  * [GET [/events/sales\_log/:event\_id]](#get-eventssales_logevent_id)
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 
