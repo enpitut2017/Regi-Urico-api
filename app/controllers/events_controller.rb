@@ -9,10 +9,10 @@ class EventsController < ApplicationController
   def create
     json_request = JSON.parse(request.body.read)
     @event = Event.create(
-      name: json_request['name'],
-      seller_id: @seller.id,
+        name: json_request['name'],
+        seller_id: @seller.id,
     )
-    render json: {
+      render json: {
       id: @event.id,
       name: @event.name,
     }
@@ -43,9 +43,6 @@ class EventsController < ApplicationController
 
       # 最後に更新されたイベントを返す
       @event = Event.order('updated_at desc').first
-      if  @event.nil?
-        render errors: 'No content', status: :no_content
-      end
 
       render json: {
           id: @event.id,
@@ -60,7 +57,7 @@ class EventsController < ApplicationController
   def show
     @event = Event.find_by(id: params[:id])
     if @event.nil?
-      return render json: { errors: { event: ["is forbidden to access"] }}, status: :forbidden
+      return render json: { errors: 'Event Not Found' }, status: :not_found
     elsif @event.seller != seller
       render status: :forbidden
     else
@@ -72,7 +69,7 @@ class EventsController < ApplicationController
     unless Seller.first.events.ids.include?(id)
       @event = Event.find_by(id: params[:id])
       if @event.nil?
-        return render json: { errors: { event: ["is forbidden to access"] }}, status: :forbidden
+        return render json: { errors: 'Event Not Found' }, status: :not_found
       end
     end
 
@@ -85,7 +82,7 @@ class EventsController < ApplicationController
   def current_seller()
     @seller = Seller.find_by(token: request.headers['HTTP_X_AUTHORIZED_TOKEN'])
     unless @seller
-      render json: { errors: { token: ["is unauthorized"] }}, status: :unauthorized
+      render json: {errors: 'Unauthorized'}, status: :unauthorized
     end
   end
 end
