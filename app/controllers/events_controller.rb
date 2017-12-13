@@ -78,31 +78,28 @@ class EventsController < ApplicationController
   end
 
   def sales_log
-    seller = current_seller(request.headers['HTTP_X_AUTHORIZED_TOKEN'])
-    unless seller
-      render json: { errors: 'Unauthorized'}
-    else
-      @event = Event.find(params[:id])
-      if @event.seller == seller
-        # イベントの所有者はトークンを持つカレントユーザと同一なので、ログ出力を許可
-        items = @event.event_items
-        rets = []
-        sales = 0
-        items.each do |item|
-          subcounts = -item.logs.where("diff_count < 0").sum(:diff_count)
-          subsales = subcounts * item.price
-          sales += subsales
-          rets.push({
+    @event = Event.find_by(id: params[:id])
+    if @event.nil?
+      return render json: { errors: { id: ['is not found'] }}, status: :not_found
+    elsif @event.seller == @seller
+      # イベントの所有者はトークンを持つカレントユーザと同一なので、ログ出力を許可
+      items = []
+      sales = 0
+      @event.event_items.each do |item|
+        subcounts = -item.logs.where("diff_count < 0").sum(:diff_count)
+        subsales = subcounts * item.price
+        sales += subsales
+        item = {
             id: item.id,
             subcount: subcounts,
             subsales: subsales
-          })
-        end
-        return render json: {sales: sales, items: rets}
-      else
-        # イベントの所有者以外がログ出力しようとしているので、403: Forbiddenを返す
-        render status: :forbidden
+        }
+        items.push(item)
       end
+      return render json: { sales: sales, items: items }
+    else
+      # イベントの所有者以外がログ出力しようとしているので、403: Forbiddenを返す
+      return render json: { errors: { id: ['is not yours'] }}, status: :forbidden
     end
   end
 
