@@ -359,6 +359,23 @@ HTTP 200 OK
 }
 ```
 
+nameが空欄の場合、作成に失敗する
+
+```
+HTTP 400 Bad Request
+```
+
+```json
+{
+    "errors": {
+        "name": [
+            "can't be blank",
+            "is too short (minimum is 1 character)"
+        ]
+    }
+}
+```
+
 認証失敗
 
 ```
@@ -390,6 +407,8 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ### response
 
+修正成功
+
 ```
 HTTP 200 OK
 ```
@@ -398,6 +417,22 @@ HTTP 200 OK
 {
     "id": 13,
     "name": "新しいイベント名"
+}
+```
+
+nameが空欄の場合、修正に失敗する
+
+```
+HTTP 400 Bad Request
+```
+
+```json
+{
+    "errors": {
+        "name": [
+            "can't be blank"
+        ]
+    }
 }
 ```
 
@@ -431,6 +466,8 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ### response
 
+削除が成功すると、最後に更新されたイベントが表示される
+
 ```
 HTTP 200 OK
 ```
@@ -439,6 +476,21 @@ HTTP 200 OK
 {
     "id": 12,
     "name": "最後に更新されたイベント"
+}
+```
+
+ユーザーが所持していないidのイベントを削除しようとした場合、エラーメッセージが表示される
+```
+HTTP 403 Forbidden
+```
+
+```
+{
+    "errors": {
+        "id": [
+            "is forbidden"
+        ]
+    }
 }
 ```
 

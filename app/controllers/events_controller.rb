@@ -9,13 +9,18 @@ class EventsController < ApplicationController
   def create
     json_request = JSON.parse(request.body.read)
     @event = Event.create(
-        name: json_request['name'],
+        name: json_request['name'] || "",
         seller_id: @seller.id,
     )
-      render json: {
-      id: @event.id,
-      name: @event.name,
-    }
+
+    if @event.invalid?
+      return render json: { errors: @event.errors.messages}, status: :bad_request
+    end
+    if @event.save
+      return render json: {id: @event.id, name: @event.name}, status: :created
+    else
+      return render json: { errors: @event.errors.messages}, status: :bad_request
+   end
   end
 
   def update
@@ -23,7 +28,11 @@ class EventsController < ApplicationController
     @event = Event.find(json_request['id'])
     if @event.seller == @seller
       # イベントの所有者はトークンを持つカレントユーザと同一なので、更新を許可
-      @event.update_attribute(:name, json_request['name'])
+      @name = json_request['name']
+      @event.update_attribute(:name, @name)
+      if @name.nil?
+        return render json: { errors: { name: ['can't be blank] }}, status: :bad_request
+      end
       render json: {
           id: @event.id,
           name: @event.name,
@@ -50,7 +59,7 @@ class EventsController < ApplicationController
       }
     else
       # イベントの所有者以外が削除しようとしているので、403: Forbiddenを返す
-      render status: :forbidden
+      render json: { errors: { id: ['is forbidden'] }}, status: :forbidden
     end
   end
 
