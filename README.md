@@ -22,11 +22,12 @@
 ## URL
 - Twitter: https://twitter.com/nearbuy_enpit17
 - アプリ:  http://210.140.221.144/
-- タスクボード: 
+- タスクボード:
   - -10/25 https://trello.com/b/h1uiYFdg/task-board
   - 10/27- https://trello.com/b/h1uiYFdg/task-board-10-27
-  - 11/10- https://trello.com/b/bZkIE7zu/task-board-11-10
+  - 11/10- https://trello.com/b/bZkIE7zu/task-board-11-10  
   - 11/27- https://trello.com/b/j2ztJ1Gq/task-board-11-27
+  - 12/8- https://trello.com/b/9HLLtp7w/task-board-12-8
 
 ## Member
 
@@ -39,7 +40,23 @@
 
 # API ドキュメント
 
-# API 説明
+## Table of Contents
+
+* 販売者
+  * [POST [/sellers]](#post-sellers)
+  * [POST [/signin]](#post-signin)
+* Event
+  * [GET [/events]](#get-events)
+  * [POST [/events]](#post-events)
+  * [PATCH [/events]](#patch-events)
+  * [DELETE [/events]](#delete-events)
+* Event Item
+  * [GET [/event\_items/:event\_id]](#get-event_itemsevent_id)
+  * [PATCH [/event\_items]](#patch-event_items)
+  * [DELETE [/event\_items]](#delete-event_items)
+  * [POST [/event\_items]](#post-event_items)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 
 ## POST [/sellers]
 
@@ -49,9 +66,9 @@
 
 ```json
 {
-	"name": "kajyuuen",
-	"password": "password",
-	"password_confirmation": "password"
+    "name": "kajyuuen",
+    "password": "password",
+    "password_confirmation": "password"
 }
 ```
 
@@ -90,14 +107,18 @@
 
 ```json
 {
-	"name": "kajyuuen",
-	"password": "password",
+    "name": "kajyuuen",
+    "password": "password",
 }
 ```
 
 ### response
 
-作成成功
+認証成功
+
+```
+HTTP 200 OK
+```
 
 ```json
 {
@@ -107,17 +128,150 @@
 }
 ```
 
-作成失敗
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
 
 ```json
 {
     "errors": {
-        "password_confirmation": [
-            "doesn't match Password"
-        ],
         "name": [
-            "has already been taken"
+            "may be incorrect"
+        ],
+        "password": [
+            "may be incorrect"
         ]
+    }
+}
+```
+
+## PATCH [/sellers]
+
+トークンで認証された販売者のアカウント名やパスワードを変更する。
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
+```
+
+```json
+{
+    "name": "urushiyama",
+    "password": "password"
+}
+```
+
+#### 一部だけを変更する
+
+`name`だけ変えたいときには
+
+```json
+{
+    "name": "urushiyama"
+}
+```
+
+あるいは
+
+```json
+    "name": "urushiyama",
+    "password": ""
+```
+
+`password`についても`name`と同様である。
+
+### response
+
+更新成功
+
+```json
+{
+    "id": 1,
+    "name": "urushiyama",
+    "token": "q2w5ARRr62KEZqGSUGCfzjE6"
+}
+```
+
+更新失敗
+
+```
+HTTP 400 Bad Request
+```
+
+```json
+{
+    "errors": {
+        "name": ["can't be blank"],
+        "password": ["can't be blank"]
+    }
+}
+```
+
+トークン認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is unauthorized"]
+    }
+}
+```
+
+## DELETE [/sellers]
+
+トークンで認証された販売者のアカウントを削除する。
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
+```
+
+```json
+{
+    "password": "password"
+}
+```
+
+### response
+
+削除成功
+
+```
+HTTP 204 No Content
+```
+
+パスワードの不一致による削除失敗
+
+```
+HTTP 400 Bad Request
+```
+
+```json
+{
+    "errors": {
+        "password": ["is incorrect"]
+    }
+}
+```
+
+トークン認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is unauthorized"]
     }
 }
 ```
@@ -134,11 +288,13 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ### response
 
-作成成功
+```
+HTTP 200 OK
+```
 
 ```json
 {
-    "event": [
+    "events": [
         {
             "id": 9,
             "name": "FULL CODE 5",
@@ -150,11 +306,78 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 }
 ```
 
-作成失敗
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "token": ["is not authorized"]
+    }
+}
+```
+
+## GET [/events/:event_id]
+
+1つのイベント情報を取得する
+
+```
+HTTP 200 OK
+```
+
+```json
+{
+    "id": 12,
+    "name": "コミケ2017冬",
+}
+```
+
+イベントが見つからない場合
+
+```
+HTTP 404 Not Found
+```
+
+```json
+{
+    "errors": {
+        "id": [
+            "is not found"
+        ]
+    }
+}
+```
+
+イベントが他人のものである場合
+
+```
+HTTP 403 Forbidden
+```
+
+```json
+{
+    "errors": {
+        "id": [
+            "is not yours"
+        ]
+    }
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is not authorized"]
+    }
 }
 ```
 
@@ -176,7 +399,9 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ### response
 
-作成成功
+```
+HTTP 201 Created
+```
 
 ```json
 {
@@ -185,11 +410,35 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 }
 ```
 
-作成失敗
+nameが空欄の場合、作成に失敗する
+
+```
+HTTP 400 Bad Request
+```
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "name": [
+            "can't be blank",
+            "is too short (minimum is 1 character)"
+        ]
+    }
+}
+```
+
+
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is not authorized"]
+    }
 }
 ```
 
@@ -205,14 +454,18 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ```json
 {
-    "event_id": 13,
+    "id": 13,
     "name": "新しいイベント名"
 }
 ```
 
 ### response
 
-作成成功
+修正成功
+
+```
+HTTP 200 OK
+```
 
 ```json
 {
@@ -221,11 +474,33 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 }
 ```
 
-作成失敗
+nameが空欄の場合、修正に失敗する
+
+```
+HTTP 400 Bad Request
+```
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "name": [
+            "cannot be blank"
+        ]
+    }
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is not authorized"]
+    }
 }
 ```
 
@@ -241,13 +516,17 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ```json
 {
-    "event_id": 13
+    "id": 13
 }
 ```
 
 ### response
 
-作成成功
+削除が成功すると、最後に更新されたイベントが表示される
+
+```
+HTTP 200 OK
+```
 
 ```json
 {
@@ -256,13 +535,120 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 }
 ```
 
-作成失敗
+idが存在しなかった場合
+
+```
+HTTP 404 Not Found
+```
+
+```json
+{
+    "errors": {
+        "id": [
+            "is not found"
+        ]
+    }
+}
+```
+
+他人のイベントを削除しようとした場合
+
+```
+HTTP 403 Forbidden
+```
+
+```
+{
+    "errors": {
+        "id": [
+            "is forbidden"
+        ]
+    }
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is not authorized"]
+    }
+}
+```
+
+## GET [/event_items/:event_id]
+
+指定したイベントのアイテムリストを取得する。
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
+```
+
+```
+/event_items/1
+/event_items/999 # 存在しない event_id の場合
+```
+
+### response
+
+イベントが存在する場合、最新のアイテム一覧が返ってきます。
+
+```
+HTTP 200 OK
+```
+
+```json
+{
+    "items": [
+        {
+            "item_id": 1,
+            "event_id": 1,
+            "name": "1",
+            "price": 1400,
+            "count": 100
+        },
+        {
+            "item_id": 2,
+            "event_id": 1,
+            "name": "新しい本のタイトル",
+            "price": 10000,
+            "count": 20
+        }
+    ]
+}
+```
+
+指定したイベントが存在しなかった場合、または指定したイベントが自分のものでなかった場合、HTTP 404とともに、空のアイテムリストが返ります。
+
+```
+HTTP 404 Not Found
+```
+
+```json
+{
+    "items": []
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorised
+```
 
 ```json
 {
     "errors": "Unauthorized"
 }
 ```
+
 
 ## PATCH [/event_items]
 

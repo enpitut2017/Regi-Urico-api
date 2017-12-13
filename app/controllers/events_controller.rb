@@ -1,80 +1,80 @@
 class EventsController < ApplicationController
+  before_action :current_seller
+
   def index
-    seller = current_seller(request.headers['HTTP_X_AUTHORIZED_TOKEN'])
-    unless seller
-      render json: { errors: 'Unauthorized' }
+    @events = @seller.events
+    render json: { events: @events }
+  end
+
+  def show
+    @event = Event.find_by(id: params[:id])
+    if @event.nil?
+      render json: { errors: {id: ['is not found'] }}, status: :not_found
+    elsif @event.seller != @seller
+      render json: { errors: { id: ['is not yours'] }}, status: :forbidden
     else
-      @events = seller.events
-      render json: { event: @events }
+      render json: @event, include: {event_items: :item}
     end
   end
 
   def create
-    seller = current_seller(request.headers['HTTP_X_AUTHORIZED_TOKEN'])
-    unless seller
-      render json: { errors: 'Unauthorized'}
+    json_request = JSON.parse(request.body.read)
+    @event = Event.create(
+        name: json_request['name'] || "",
+        seller_id: @seller.id,
+    )
+
+    if @event.invalid?
+      return render json: { errors: @event.errors.messages }, status: :bad_request
+    end
+    if @event.save
+      return render json: { id: @event.id, name: @event.name }, status: :created
     else
-      json_request = JSON.parse(request.body.read)
-      @event = Event.create(
-          name: json_request['name'],
-          seller_id: seller.id,
-      )
+      return render json: { errors: @event.errors.messages }, status: :bad_request
+   end
+  end
+
+  def update
+    json_request = JSON.parse(request.body.read)
+    @event = Event.find(json_request['id'])
+    if @event.seller == @seller
+      # イベントの所有者はトークンを持つカレントユーザと同一なので、更新を許可
+      @name = json_request['name']
+      @event.update_attribute(:name, @name)
+      if @name.nil? || @name.empty?
+        return render json: { errors: { name: ['cannot be blank'] }}, status: :bad_request
+      end
       render json: {
           id: @event.id,
           name: @event.name,
       }
-    end
-  end
-
-  def update
-    seller = current_seller(request.headers['HTTP_X_AUTHORIZED_TOKEN'])
-    unless seller
-      render json: { errors: 'Unauthorized'}
     else
-      json_request = JSON.parse(request.body.read)
-      @event = Event.find(json_request['event_id'])
-      if @event.seller == seller
-        # イベントの所有者はトークンを持つカレントユーザと同一なので、更新を許可
-        @event.update_attribute(:name, json_request['name'])
-        render json: {
-            id: @event.id,
-            name: @event.name,
-        }
-      else
-        # イベントの所有者以外が更新しようとしているので、403: Forbiddenを返す
-        render status: :forbidden
-      end
+      # イベントの所有者以外が更新しようとしているので、403: Forbiddenを返す
+      render json: { errors: { id: ['event is not yours'] }}, status: :forbidden
     end
   end
 
   def destroy
-    seller = current_seller(request.headers['HTTP_X_AUTHORIZED_TOKEN'])
-    unless seller
-      render json: { errors: 'Unauthorized'}
-    else
-      json_request = JSON.parse(request.body.read)
-      @event = Event.find(json_request['event_id'])
-      if @event.seller == seller
-        # イベントの所有者はトークンを持つカレントユーザと同一なので、削除を許可
-        @event.destroy
-
-        # 最後に更新されたイベントを返す
-        @event = Event.order('updated_at desc').first
-
-        render json: {
-            id: @event.id,
-            name: @event.name,
-        }
-      else
-        # イベントの所有者以外が削除しようとしているので、403: Forbiddenを返す
-        render status: :forbidden
-      end
+    json_request = JSON.parse(request.body.read)
+    @event = Event.find_by(id: json_request['id'])
+    if @event.nil?
+      return render json: { errors: { id: ['is not found'] }}, status: :not_found
     end
-  end
+    if @event.seller == @seller
+      # イベントの所有者はトークンを持つカレントユーザと同一なので、削除を許可
+      @event.destroy
 
-  def show
-    @event = Event.find(params[:id])
-    render json: @event, include: {event_items: :item}
+      # 最後に更新されたイベントを返す
+      @event = Event.order('updated_at desc').first
+
+      render json: {
+          id: @event.id,
+          name: @event.name,
+      }
+    else
+      # イベントの所有者以外が削除しようとしているので、403: Forbiddenを返す
+      render json: { errors: { id: ['is forbidden'] }}, status: :forbidden
+    end
   end
 
   def sales_log
@@ -108,12 +108,10 @@ class EventsController < ApplicationController
 
   private
 
-  def current_seller(token)
-    seller = Seller.find_by(token: token)
-    if seller
-      seller
-    else
-      false
+  def current_seller()
+    @seller = Seller.find_by(token: request.headers['HTTP_X_AUTHORIZED_TOKEN'])
+    unless @seller
+      render json: {errors: {token: ['is not authorized']}}, status: :unauthorized
     end
   end
 end
