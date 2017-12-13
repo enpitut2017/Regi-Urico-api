@@ -306,15 +306,64 @@ HTTP 200 OK
 }
 ```
 
-イベントが見つからない
+認証失敗
 
 ```
-HTTP 404 Not
+HTTP 401 Unauthorized
 ```
 
 ```json
 {
-     "errors": "Event Not Found" 
+    "errors": {
+        "token": ["is not authorized"]
+    }
+}
+```
+
+## GET [/events/:event_id]
+
+1つのイベント情報を取得する
+
+```
+HTTP 200 OK
+```
+
+```json
+{
+    "id": 12,
+    "name": "コミケ2017冬",
+}
+```
+
+イベントが見つからない場合
+
+```
+HTTP 404 Not Found
+```
+
+```json
+{
+    "errors": {
+        "id": [
+            "is not found"
+        ]
+    }
+}
+```
+
+イベントが他人のものである場合
+
+```
+HTTP 403 Forbidden
+```
+
+```json
+{
+    "errors": {
+        "id": [
+            "is not yours"
+        ]
+    }
 }
 ```
 
@@ -326,7 +375,9 @@ HTTP 401 Unauthorized
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "token": ["is not authorized"]
+    }
 }
 ```
 
@@ -349,7 +400,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 ### response
 
 ```
-HTTP 200 OK
+HTTP 201 Created
 ```
 
 ```json
@@ -376,6 +427,7 @@ HTTP 400 Bad Request
 }
 ```
 
+
 認証失敗
 
 ```
@@ -384,7 +436,9 @@ HTTP 401 Unauthorized
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "token": ["is not authorized"]
+    }
 }
 ```
 
@@ -430,7 +484,7 @@ HTTP 400 Bad Request
 {
     "errors": {
         "name": [
-            "can't be blank"
+            "cannot be blank"
         ]
     }
 }
@@ -444,7 +498,9 @@ HTTP 401 Unauthorized
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "token": ["is not authorized"]
+    }
 }
 ```
 
@@ -479,7 +535,24 @@ HTTP 200 OK
 }
 ```
 
-ユーザーが所持していないidのイベントを削除しようとした場合、エラーメッセージが表示される
+idが存在しなかった場合
+
+```
+HTTP 404 Not Found
+```
+
+```json
+{
+    "errors": {
+        "id": [
+            "is not found"
+        ]
+    }
+}
+```
+
+他人のイベントを削除しようとした場合
+
 ```
 HTTP 403 Forbidden
 ```
@@ -502,7 +575,9 @@ HTTP 401 Unauthorized
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "token": ["is not authorized"]
+    }
 }
 ```
 

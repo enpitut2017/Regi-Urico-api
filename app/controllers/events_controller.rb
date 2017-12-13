@@ -6,6 +6,17 @@ class EventsController < ApplicationController
     render json: { events: @events }
   end
 
+  def show
+    @event = Event.find_by(id: params[:id])
+    if @event.nil?
+      render json: { errors: {id: ['is not found'] }}, status: :not_found
+    elsif @event.seller != @seller
+      render json: { errors: { id: ['is not yours'] }}, status: :forbidden
+    else
+      render json: @event, include: {event_items: :item}
+    end
+  end
+
   def create
     json_request = JSON.parse(request.body.read)
     @event = Event.create(
@@ -14,12 +25,12 @@ class EventsController < ApplicationController
     )
 
     if @event.invalid?
-      return render json: { errors: @event.errors.messages}, status: :bad_request
+      return render json: { errors: @event.errors.messages }, status: :bad_request
     end
     if @event.save
-      return render json: {id: @event.id, name: @event.name}, status: :created
+      return render json: { id: @event.id, name: @event.name }, status: :created
     else
-      return render json: { errors: @event.errors.messages}, status: :bad_request
+      return render json: { errors: @event.errors.messages }, status: :bad_request
    end
   end
 
@@ -30,7 +41,7 @@ class EventsController < ApplicationController
       # イベントの所有者はトークンを持つカレントユーザと同一なので、更新を許可
       @name = json_request['name']
       @event.update_attribute(:name, @name)
-      if @name.nil?
+      if @name.nil? || @name.empty?
         return render json: { errors: { name: ['cannot be blank'] }}, status: :bad_request
       end
       render json: {
@@ -39,13 +50,16 @@ class EventsController < ApplicationController
       }
     else
       # イベントの所有者以外が更新しようとしているので、403: Forbiddenを返す
-      render status: :forbidden
+      render json: { errors: { id: ['event is not yours'] }}, status: :forbidden
     end
   end
 
   def destroy
     json_request = JSON.parse(request.body.read)
-    @event = Event.find(json_request['id'])
+    @event = Event.find_by(id: json_request['id'])
+    if @event.nil?
+      return render json: { errors: { id: ['is not found'] }}, status: :not_found
+    end
     if @event.seller == @seller
       # イベントの所有者はトークンを持つカレントユーザと同一なので、削除を許可
       @event.destroy
@@ -63,35 +77,12 @@ class EventsController < ApplicationController
     end
   end
 
-  def show
-    @event = Event.find_by(id: params[:id])
-    if @event.nil?
-      return render json: { errors: 'Event Not Found' }, status: :not_found
-    elsif @event.seller != seller
-      render status: :forbidden
-    else
-      render json: @event, include: {event_items: :item}
-    end
-
-    id = params[:id]
-
-    unless Seller.first.events.ids.include?(id)
-      @event = Event.find_by(id: params[:id])
-      if @event.nil?
-        return render json: { errors: 'Event Not Found' }, status: :not_found
-      end
-    end
-
-    @event = Event.find(id)
-    render json: @event, include: {event_items: :item}
-  end
-
   private
 
   def current_seller()
     @seller = Seller.find_by(token: request.headers['HTTP_X_AUTHORIZED_TOKEN'])
     unless @seller
-      render json: {errors: 'Unauthorized'}, status: :unauthorized
+      render json: {errors: {token: ['is not authorized']}}, status: :unauthorized
     end
   end
 end
