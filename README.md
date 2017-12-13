@@ -496,7 +496,6 @@ HTTP 401 Unauthorized
 }
 ```
 
-
 ## POST [/event_items]
 
 イベントに新しいアイテムを登録する。
@@ -545,119 +544,7 @@ HTTP 200 OK
 }
 ```
 
-必要な情報不足により作成失敗 (i.e. `item_name`が存在しないなど)
-
-```
-HTTP 400 Bad Request
-```
-
-```json
-{
-    "errors": {
-        "name": [
-            "can't be blank"
-        ]
-    }
-}
-```
-
-イベントが存在しない場合
-
-```
-HTTP 400 Bad Request
-```
-
-```
-{
-    "errors": {
-        "event_id": [
-            "is not found"
-        ]
-    }
-}
-```
-
-他人のイベントの場合
-
-```
-HTTP 404 Forbidden
-```
-
-```
-{
-    "errors": {
-        "event_id": [
-            "is not found"
-        ]
-    }
-}
-```
-
-認証失敗
-
-```
-HTTP 401 Unauthorized
-```
-
-```json
-{
-    "errors": {
-        "token": [
-            "is not authorized"
-        ]
-    }
-}
-```
-
-## POST [/event_items]
-
-イベントに新しいアイテムを登録する。
-
-### request
-
-```
-X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
-```
-
-```json
-{
-    "event_id": 4,
-    "price": 10000,
-    "count": 200,
-    "name": "高級ブック"
-}
-```
-
-### response
-
-登録に成功した場合、登録後の最新のアイテムリストが返ります。
-
-```
-HTTP 200 OK
-```
-
-```json
-{
-    "items": [
-        {
-            "event_id": 4,
-            "item_id": 1,
-            "name": "安い本",
-            "price": 100,
-            "count": 20
-        },
-        {
-            "event_id": 4,
-            "item_id": 2,
-            "name": "高級ブック",
-            "price": 10000,
-            "count": 200
-        }
-    ]
-}
-```
-
-必要な情報不足により作成失敗 (i.e. `item_name`が存在しないなど)
+必要な情報不足により作成失敗 (i.e. `name`が存在しないなど)
 
 ```
 HTTP 400 Bad Request
@@ -699,7 +586,7 @@ HTTP 403 Forbidden
 {
     "errors": {
         "event_id": [
-            "is not found"
+            "is not yours"
         ]
     }
 }
