@@ -300,9 +300,13 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 取得成功
 
+```
+HTTP 200 OK
+```
+
 ```json
 {
-    "event": [
+    "events": [
         {
             "id": 9,
             "name": "FULL CODE 5",
@@ -314,11 +318,78 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 }
 ```
 
-取得失敗
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "token": ["is not authorized"]
+    }
+}
+```
+
+## GET [/events/:event_id]
+
+1つのイベント情報を取得する
+
+```
+HTTP 200 OK
+```
+
+```json
+{
+    "id": 12,
+    "name": "コミケ2017冬",
+}
+```
+
+イベントが見つからない場合
+
+```
+HTTP 404 Not Found
+```
+
+```json
+{
+    "errors": {
+        "id": [
+            "is not found"
+        ]
+    }
+}
+```
+
+イベントが他人のものである場合
+
+```
+HTTP 403 Forbidden
+```
+
+```json
+{
+    "errors": {
+        "id": [
+            "is not yours"
+        ]
+    }
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is not authorized"]
+    }
 }
 ```
 
@@ -342,6 +413,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 作成成功
 
+```
+HTTP 201 Created
+```
+
 ```json
 {
     "id": 12,
@@ -349,11 +424,35 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 }
 ```
 
-作成失敗
+nameが空欄の場合、作成に失敗する
+
+```
+HTTP 400 Bad Request
+```
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "name": [
+            "can't be blank",
+            "is too short (minimum is 1 character)"
+        ]
+    }
+}
+```
+
+
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is not authorized"]
+    }
 }
 ```
 
@@ -369,14 +468,18 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ```json
 {
-    "event_id": 13,
+    "id": 13,
     "name": "新しいイベント名"
 }
 ```
 
 ### response
 
-更新成功
+修正成功
+
+```
+HTTP 200 OK
+```
 
 ```json
 {
@@ -385,11 +488,33 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 }
 ```
 
-更新失敗
+nameが空欄の場合、修正に失敗する
+
+```
+HTTP 400 Bad Request
+```
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "name": [
+            "cannot be blank"
+        ]
+    }
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is not authorized"]
+    }
 }
 ```
 
@@ -405,13 +530,17 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 ```json
 {
-    "event_id": 13
+    "id": 13
 }
 ```
 
 ### response
 
-削除成功
+削除が成功すると、最後に更新されたイベントが表示される
+
+```
+HTTP 200 OK
+```
 
 ```json
 {
@@ -420,11 +549,49 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 }
 ```
 
-削除失敗
+idが存在しなかった場合
+
+```
+HTTP 404 Not Found
+```
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "id": [
+            "is not found"
+        ]
+    }
+}
+```
+
+他人のイベントを削除しようとした場合
+
+```
+HTTP 403 Forbidden
+```
+
+```
+{
+    "errors": {
+        "id": [
+            "is forbidden"
+        ]
+    }
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is not authorized"]
+    }
 }
 ```
 
@@ -785,6 +952,18 @@ HTTP 401 Unauthorized
             "is not authorized"
         ]
     }
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorised
+```
+
+```json
+{
+    "errors": "Unauthorized"
 }
 ```
 
