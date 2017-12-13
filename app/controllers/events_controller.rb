@@ -31,7 +31,7 @@ class EventsController < ApplicationController
       @name = json_request['name']
       @event.update_attribute(:name, @name)
       if @name.nil?
-        return render json: { errors: { name: ['can't be blank] }}, status: :bad_request
+        return render json: { errors: { name: ['cannot be blank'] }}, status: :bad_request
       end
       render json: {
           id: @event.id,
