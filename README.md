@@ -471,7 +471,11 @@ HTTP 401 Unauthorized
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "token": [
+            "is not authorized"
+        ]
+    }
 }
 ```
 
@@ -558,7 +562,7 @@ HTTP 400 Bad Request
 他人のイベントの場合
 
 ```
-HTTP 404 Forbidden
+HTTP 403 Forbidden
 ```
 
 ```
@@ -579,7 +583,11 @@ HTTP 401 Unauthorized
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "token": [
+            "is not authorized"
+        ]
+    }
 }
 ```
 
@@ -666,7 +674,11 @@ HTTP 401 Unauthorized
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "token": [
+            "is not authorized"
+        ]
+    }
 }
 ```
 
@@ -751,7 +763,11 @@ HTTP 401 Unauthorized
 
 ```json
 {
-    "errors": "Unauthorized"
+    "errors": {
+        "token": [
+            "is not authorized"
+        ]
+    }
 }
 ```
 
@@ -824,5 +840,21 @@ HTTP 400 Bad Request
 ```json
 {
     "errors": "there is no such item, event_id: 999, item_id: 777"
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": [
+            "is not authorized"
+        ]
+    }
 }
 ```
