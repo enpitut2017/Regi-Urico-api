@@ -76,10 +76,10 @@ class RegisterController < ApplicationController
 
   private
 
-  def current_seller()
+  def current_seller
     @seller = Seller.find_by(token: request.headers['HTTP_X_AUTHORIZED_TOKEN'])
     unless @seller
       render json: { errors: { token: ['is not authorized'] }}, status: :unauthorized
     end
   end
-  end
+end
