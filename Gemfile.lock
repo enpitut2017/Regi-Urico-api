@@ -175,6 +175,7 @@ GEM
     public_suffix (3.0.0)
     puma (3.10.0)
     rack (2.0.3)
+    rack-cors (1.0.2)
     rack-protection (2.0.0)
       rack
     rack-test (0.7.0)
@@ -306,6 +307,7 @@ DEPENDENCIES
   omniauth
   omniauth-twitter
   puma (~> 3.7)
+  rack-cors
   rails (~> 5.1.4)
   rspec-rails
   shoulda-matchers (~> 3.1)

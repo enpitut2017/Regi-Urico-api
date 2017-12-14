@@ -1,17 +1,16 @@
 class SessionsController < ApplicationController
   def new
     @seller = Seller.find_by(name: login_params[:name])
-    if @seller && @seller.authenticate(login_params[:password])
-      render json: {
-          id: @seller.id,
-          token: @seller.token,
-          name: @seller.name,
-          twitter_name: @seller.twitter_name,
-          twitter_screen_name: @seller.twitter_screen_name,
-          twitter_image_url: @seller.twitter_image_url,
+    if @seller.nil? || !@seller.authenticate(login_params[:password])
+      # 存在しない name を指定した場合 または password が誤っている場合
+      errors = {
+          name: ["may be incorrect"],
+          password: ["may be incorrect"],
       }
+      render json: {errors: errors}, status: :unauthorized
     else
-      render json: {errors: @seller.errors.messages}
+      # 正しく認証ができた場合
+      render json: @seller
     end
   end
 
