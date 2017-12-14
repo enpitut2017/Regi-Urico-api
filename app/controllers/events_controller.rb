@@ -77,6 +77,32 @@ class EventsController < ApplicationController
     end
   end
 
+  def sales_log
+    @event = Event.find_by(id: params[:id])
+    if @event.nil?
+      return render json: { errors: { id: ['is not found'] }}, status: :not_found
+    elsif @event.seller == @seller
+      # イベントの所有者はトークンを持つカレントユーザと同一なので、ログ出力を許可
+      items = []
+      sales = 0
+      @event.event_items.each do |item|
+        subcounts = -item.logs.where("diff_count < 0").sum(:diff_count)
+        subsales = subcounts * item.price
+        sales += subsales
+        item = {
+            id: item.id,
+            subcount: subcounts,
+            subsales: subsales
+        }
+        items.push(item)
+      end
+      return render json: { sales: sales, items: items }
+    else
+      # イベントの所有者以外がログ出力しようとしているので、403: Forbiddenを返す
+      return render json: { errors: { id: ['is not yours'] }}, status: :forbidden
+    end
+  end
+
   private
 
   def current_seller()

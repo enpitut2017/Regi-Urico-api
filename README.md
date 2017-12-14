@@ -55,6 +55,8 @@
   * [POST [/event\_items]](#post-event_items)
   * [PATCH [/event\_items]](#patch-event_items)
   * [DELETE [/event\_items]](#delete-event_items)
+* Sales Log
+  * [GET [/events/sales\_log/:event\_id]](#get-eventssales_logevent_id)
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 
@@ -962,5 +964,87 @@ HTTP 400 Bad Request
 ```json
 {
     "errors": "there is no such item, event_id: 999, item_id: 777"
+}
+```
+
+## GET [/events/sales_log/:event_id]
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
+```
+
+### response
+
+認証成功
+
+- `sales`: イベントの総売上
+- `items[n].id`: アイテムのid
+- `items[n].subcount`: アイテムの売り上げ個数
+- `items[n].subsales`: アイテムの売り上げ額
+
+```
+HTTP 200 OK
+```
+
+```
+{
+    "sales": 17200,
+    "items": [
+        {
+            "id": 1,
+            "subcount": 10,
+            "subsales": 14000
+        },
+        {
+            "id": 2,
+            "subcount": 4,
+            "subsales": 3200
+        }
+    ]
+}
+```
+
+
+イベントが見つからない場合
+
+```
+HTTP 404 Not Found
+```
+
+```json
+{
+    "errors": {
+        "id": ["is not found"]
+    }
+}
+```
+
+イベント所有者とトークン所有者が違うとき
+
+```
+HTTP 403 Forbidden
+```
+
+```json
+{
+    "errors": {
+        "id": ["is not yours"]
+    }
+}
+```
+
+認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is not authorized"]
+    }
 }
 ```
