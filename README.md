@@ -47,6 +47,7 @@
   * [POST [/signin]](#post-signin)
 * Event
   * [GET [/events]](#get-events)
+  * [GET [/events/:event\_id]](#get-eventsevent_id)
   * [POST [/events]](#post-events)
   * [PATCH [/events]](#patch-events)
   * [DELETE [/events]](#delete-events)
@@ -344,8 +345,17 @@ HTTP 200 OK
 
 ```json
 {
-    "id": 12,
+    "id": 1,
     "name": "コミケ2017冬",
+    "items": [
+        {
+            "price": 1400,
+            "id": 1,
+            "name": "Book1",
+            "count": 198,
+            "diff_count": 0
+         }
+    ]
 }
 ```
 
@@ -582,6 +592,14 @@ HTTP 403 Forbidden
     }
 }
 ```
+
+eventがすべて削除された時
+
+```
+HTTP 204 No Content
+```
+
+レスポンス body なし
 
 認証失敗
 
@@ -986,12 +1004,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
     "items": [
         {
             "id": 1,
-            "name": "Book1",
             "count": 3
         },
         {
             "id": 2,
-            "name": "Book2",
             "count": 5
         },
     ]
@@ -1009,22 +1025,15 @@ HTTP 201 Created
 ```json
 {
     "id": 1,
-    "name": "イベント名",
-    "event_items": [
+    "name": "冬コミ2017",
+    "items": [
         {
             "price": 1400,
-            "item_id": 1,
+            "id": 1,
             "name": "Book1",
-            "count": 19,
+            "count": 198,
             "diff_count": 0
-        },
-        {
-            "price": 600,
-            "item_id": 2,
-            "name": "Book2",
-            "count": 28,
-            "diff_count": 0
-        }
+         }
     ]
 }
 ```

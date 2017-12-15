@@ -44,7 +44,22 @@ class RegisterController < ApplicationController
           end
           client.update!(did_continue * (first_tweet ? 0 : 1) + tweet)
         end
-        render json: @event, include: {event_items: :item}, status: :created
+
+        # 最新のアイテムリストを返す
+        items = []
+        @event.event_items.each do |event_item|
+          item = Item.find_by(id: event_item.item_id)
+          price = EventItem.find_by(item_id: item.id).price
+          count = event_item.logs.sum(:diff_count)
+          items.push({
+                         price: price,
+                         id: item.id,
+                         name: item.name,
+                         count: count,
+                         diff_count: 0,
+                     })
+        end
+        render json: { id: @event.id, name: @event.name, items: items }
       rescue => e
         render json: {errors: e.message}, status: :bad_request
       end
@@ -69,11 +84,3 @@ class RegisterController < ApplicationController
     end
   end
 end
-# return:JSON
-# {
-#   "id": ~,
-#   "items": [
-#     { "id": ~, "name": ~, "sum_price": ~ }, ...
-#   ],
-#   "all_price": ~
-# }

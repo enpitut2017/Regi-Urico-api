@@ -13,7 +13,21 @@ class EventsController < ApplicationController
     elsif @event.seller != @seller
       render json: { errors: { id: ['is not yours'] }}, status: :forbidden
     else
-      render json: @event, include: {event_items: :item}
+      event_items = EventItem.where(event_id: @event.id)
+      items = []
+      event_items.each do |event_item|
+        item = Item.find_by(id: event_item.item_id)
+        price = EventItem.find_by(item_id: item.id).price
+        count = event_item.logs.sum(:diff_count)
+        items.push({
+            price: price,
+            id: item.id,
+            name: item.name,
+            count: count,
+            diff_count: 0,
+         })
+      end
+      render json: { id: @event.id, name: @event.name, items: items }
     end
   end
 
