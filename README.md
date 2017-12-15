@@ -593,6 +593,14 @@ HTTP 403 Forbidden
 }
 ```
 
+eventがすべて削除された時
+
+```
+HTTP 204 No Content
+```
+
+レスポンス body なし
+
 認証失敗
 
 ```
