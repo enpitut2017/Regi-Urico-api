@@ -1024,7 +1024,7 @@ HTTP 201 Created
 
 ```json
 {
-    "id": 1,
+    "event_id": 1,
     "name": "冬コミ2017",
     "items": [
         {
@@ -1038,15 +1038,51 @@ HTTP 201 Created
 }
 ```
 
-指定したアイテムが存在しない、または他人のアイテムだった場合
+指定した event_id が存在しない場合
 
 ```
-HTTP 400 Bad Request
+HTTP 404 Not Found
 ```
 
 ```json
 {
-    "errors": "there is no such item, event_id: 999, item_id: 777"
+    "errors": {
+        "event_id": [
+            "is not found"
+        ]
+    }
+}
+```
+
+他人のイベントだった場合
+
+```
+HTTP 403 Forbidden
+```
+
+```json
+{
+    "errors": {
+        "event_id": [
+            "is not yours"
+        ]
+    }
+}
+```
+
+アイテムが存在しない場合または他人のアイテムの場合
+
+```
+HTTP 404 Not Found
+```
+
+```json
+{
+    "errors": {
+        "id": [
+            "is not found"
+        ]
+    }
 }
 ```
 
