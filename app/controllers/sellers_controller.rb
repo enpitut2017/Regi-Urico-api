@@ -5,9 +5,9 @@ class SellersController < ApplicationController
     @seller = Seller.new(seller_params)
     if @seller.valid?
       @seller.save
-      render json: @seller
+      render json: @seller, status: :created
     else
-      render json: { errors: @seller.errors.messages }
+      render json: { errors: @seller.errors.messages }, status: :bad_request
     end
   end
 

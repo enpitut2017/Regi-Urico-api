@@ -5,7 +5,7 @@ class EventItemsController < ApplicationController
     event_id = params[:id]
     items = event_items(event_id)
     if items.empty?
-      render json: {items: []}, status: :not_found
+      render json: {items: [], errors: {id: ['is not found']}}, status: :not_found
     else
       render json: {items: items}
     end
@@ -17,10 +17,10 @@ class EventItemsController < ApplicationController
     event = Event.find_by(id: event_id)
     if event.nil?
       # イベントが存在しない
-      return render json: {'errors': 'Event is not found.'}, status: :not_found
+      return render json: {'errors': {event_id: ['is not found']}}, status: :not_found
     elsif event.seller != @seller
       # イベントの所有者がトークンの所有者と異なる
-      return render json: {errors: 'Permission denied'}, status: :forbidden
+      return render json: {'errors': {event_id: ['is not yours']}}, status: :forbidden
     end
     price = json_request['price']
     name = json_request['name']
@@ -42,7 +42,7 @@ class EventItemsController < ApplicationController
         log = event_item.logs.create!(event_item_id: event_item.id, diff_count: count)
       end
     rescue ActiveRecord::RecordInvalid => e # 情報不足で新規アイテムが作成できなかった場合
-      return render json: {'errors': e}, status: :bad_request
+      return render json: {'errors': e.record.errors}, status: :bad_request
     end
 
     items = event_items(event_id)
@@ -58,13 +58,16 @@ class EventItemsController < ApplicationController
     if item.nil? || event.nil?
       # アイテムかイベントが存在しない
       errors = []
-      errors.push('Item is not found.') if item.nil?
-      errors.push('Event is not found.') if event.nil?
+      errors.push({item_id: ['is not found']}) if item.nil?
+      errors.push({event_id: ['is not found.']}) if event.nil?
       return render json: {'errors': errors}, status: :not_found
     end
-    if item.seller != @seller || event.seller != @seller
-      # アイテムかイベントの所有者がトークンの所有者と異なる
-      return render json: {errors: 'Permission denied'}, status: :forbidden
+    if item.seller != @seller
+      # アイテムの所有者がトークンの所有者と異なる
+      return render json: {errors: {item_id: ['is not yours']}}, status: :forbidden
+    elsif event.seller != @seller
+      # イベントの所有者がトークンの所有者と異なる
+      return render json: {errors: {event_id: ['is not yours']}}, status: :forbidden
     end
     event_item = EventItem.find_by(item_id: item_id, event_id: event_id)
 
@@ -91,17 +94,23 @@ class EventItemsController < ApplicationController
     event_id = json_request['event_id']
     item = Item.find_by(id: item_id)
     event = Event.find_by(id: event_id)
-    if item.nil? || event.nil?
-      # アイテムかイベントが存在しない
-      errors = []
-      errors.push('Item is not found.') if item.nil?
-      errors.push('Event is not found.') if event.nil?
-      return render json: {'errors': errors}, status: :not_found
+
+    if item.nil?
+      # アイテムが存在しない
+      return render json: {'errors': {item_id: ['is not found']}}, status: :not_found
+    elsif event.nil?
+      # イベントが存在しない
+      return render json: {'errors': {event_id: ['is not found']}}, status: :not_found
     end
-    if item.seller != @seller || event.seller != @seller
-      # アイテムかイベントの所有者がトークンの所有者と異なる
-      return render json: {errors: 'Permission denied'}, status: :forbidden
+
+    if item.seller != @seller
+      # アイテムの所有者がトークンの所有者と異なる
+      return render json: {errors: {item_id: ['is not yours']}}, status: :forbidden
+    elsif event.seller != @seller
+      # イベントの所有者がトークンの所有者と異なる
+      return render json: {errors: {event_id: ['is not yours']}}, status: :forbidden
     end
+
     # event_itemの削除
     result = EventItem.where(item_id: item_id, event_id: event_id).destroy_all
 
@@ -118,13 +127,13 @@ class EventItemsController < ApplicationController
   def current_seller()
     @seller = Seller.find_by(token: request.headers['HTTP_X_AUTHORIZED_TOKEN'])
     unless @seller
-      render json: {errors: 'Unauthorized'}, status: :unauthorized
+      render json: {errors: {'token': ['is not authorized']}}, status: :unauthorized
     end
   end
 
   def event_items(event_id)
     # event_id が @seller が所有しているものか確認する
-    event = Event.find(event_id)
+    event = Event.find_by(id: event_id)
     if event && event.seller_id != @seller.id
       return []
     end
