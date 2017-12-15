@@ -10,4 +10,5 @@ Rails.application.routes.draw do
   patch '/sellers', to: 'sellers#update'
   delete '/sellers', to: 'sellers#destroy'
   post  '/signin',  to: 'sessions#new'
+  get '/events/sales_log/:id', to: 'events#sales_log'
 end
