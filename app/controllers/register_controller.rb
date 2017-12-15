@@ -27,7 +27,6 @@ class RegisterController < ApplicationController
           end
           @event = Event.find(json_request['event_id'])
         end
-        client = get_client
         will_continue = "（続く）"
         did_continue = "（続き）"
         tweet_max_size = 140
@@ -40,9 +39,9 @@ class RegisterController < ApplicationController
             else
               sliced_tweet = did_continue + tweet.slice!(0, 140 - did_continue.size - will_continue.size) + will_continue
             end
-            client.update!(sliced_tweet)
+            twitter_update(sliced_tweet)
           end
-          client.update!(did_continue * (first_tweet ? 0 : 1) + tweet)
+          twitter_update(did_continue * (first_tweet ? 0 : 1) + tweet)
         end
 
         # 最新のアイテムリストを返す
@@ -74,6 +73,16 @@ class RegisterController < ApplicationController
       config.consumer_secret = ENV['TWITTER_CONSUMER_SECRET']
       config.access_token = ENV['TWITTER_ACCESS_TOKEN']
       config.access_token_secret = ENV['TWITTER_ACCESS_TOKEN_SECRET']
+    end
+  end
+
+  def twitter_update(tweet)
+    client = get_client()
+    begin
+      client.update!(tweet)
+    rescue Twitter::Error::DuplicateStatus => e
+      time_string = Time.now.strftime('%Y/%m/%d %H:%M')
+      client.update!("#{tweet} (#{time_string})")
     end
   end
 
