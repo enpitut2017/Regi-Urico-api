@@ -56,6 +56,8 @@
   * [POST [/event\_items]](#post-event_items)
   * [PATCH [/event\_items]](#patch-event_items)
   * [DELETE [/event\_items]](#delete-event_items)
+* Register
+  * [POST [/register]](#post-register)
 * Sales Log
   * [GET [/events/sales\_log/:event\_id]](#get-eventssales_logevent_id)
 
