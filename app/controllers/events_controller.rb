@@ -66,11 +66,14 @@ class EventsController < ApplicationController
 
       # 最後に更新されたイベントを返す
       @event = Event.order('updated_at desc').first
-
-      render json: {
-          id: @event.id,
-          name: @event.name,
-      }
+      if @event.nil?
+        render status: :no_content
+      else
+        render json: {
+            id: @event.id,
+            name: @event.name,
+        }
+      end
     else
       # イベントの所有者以外が削除しようとしているので、403: Forbiddenを返す
       render json: { errors: { id: ['is forbidden'] }}, status: :forbidden
