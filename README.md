@@ -47,6 +47,7 @@
   * [POST [/signin]](#post-signin)
 * Event
   * [GET [/events]](#get-events)
+  * [GET [/events/:event\_id]](#get-eventsevent_id)
   * [POST [/events]](#post-events)
   * [PATCH [/events]](#patch-events)
   * [DELETE [/events]](#delete-events)
@@ -55,6 +56,8 @@
   * [POST [/event\_items]](#post-event_items)
   * [PATCH [/event\_items]](#patch-event_items)
   * [DELETE [/event\_items]](#delete-event_items)
+* Register
+  * [POST [/register]](#post-register)
 * Sales Log
   * [GET [/events/sales\_log/:event\_id]](#get-eventssales_logevent_id)
 
@@ -344,8 +347,17 @@ HTTP 200 OK
 
 ```json
 {
-    "id": 12,
+    "id": 1,
     "name": "コミケ2017冬",
+    "items": [
+        {
+            "price": 1400,
+            "id": 1,
+            "name": "Book1",
+            "count": 198,
+            "diff_count": 0
+         }
+    ]
 }
 ```
 
@@ -582,6 +594,14 @@ HTTP 403 Forbidden
     }
 }
 ```
+
+eventがすべて削除された時
+
+```
+HTTP 204 No Content
+```
+
+レスポンス body なし
 
 認証失敗
 
@@ -986,12 +1006,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
     "items": [
         {
             "id": 1,
-            "name": "Book1",
             "count": 3
         },
         {
             "id": 2,
-            "name": "Book2",
             "count": 5
         },
     ]
@@ -1008,36 +1026,65 @@ HTTP 201 Created
 
 ```json
 {
-    "id": 1,
-    "name": "イベント名",
-    "event_items": [
+    "event_id": 1,
+    "name": "冬コミ2017",
+    "items": [
         {
             "price": 1400,
-            "item_id": 1,
+            "id": 1,
             "name": "Book1",
-            "count": 19,
+            "count": 198,
             "diff_count": 0
-        },
-        {
-            "price": 600,
-            "item_id": 2,
-            "name": "Book2",
-            "count": 28,
-            "diff_count": 0
-        }
+         }
     ]
 }
 ```
 
-指定したアイテムが存在しない、または他人のアイテムだった場合
+指定した event_id が存在しない場合
 
 ```
-HTTP 400 Bad Request
+HTTP 404 Not Found
 ```
 
 ```json
 {
-    "errors": "there is no such item, event_id: 999, item_id: 777"
+    "errors": {
+        "event_id": [
+            "is not found"
+        ]
+    }
+}
+```
+
+他人のイベントだった場合
+
+```
+HTTP 403 Forbidden
+```
+
+```json
+{
+    "errors": {
+        "event_id": [
+            "is not yours"
+        ]
+    }
+}
+```
+
+アイテムが存在しない場合または他人のアイテムの場合
+
+```
+HTTP 404 Not Found
+```
+
+```json
+{
+    "errors": {
+        "id": [
+            "is not found"
+        ]
+    }
 }
 ```
 
