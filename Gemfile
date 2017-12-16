@@ -29,6 +29,8 @@ gem 'bcrypt', '~> 3.1.7'
 
 # Use twitter
 gem 'twitter'
+gem 'omniauth'
+gem 'omniauth-twitter'
 
 # CORS
 gem 'rack-cors', require: 'rack/cors'

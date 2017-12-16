@@ -35,7 +35,7 @@ class RegisterController < ApplicationController
             end
             event_item.logs.create(diff_count: item['count'])
             item = Item.find_by(id: item['id'])
-            tweet = "#{item.seller.name}様の「#{item.name}」は残り#{event_item.logs.sum(:diff_count)}個になりました！"
+            tweet = "#{item.seller.name}の「#{item.name}」は残り#{event_item.logs.sum(:diff_count)}個になりました！"
             tweets.push(tweet)
           end
         end
@@ -80,13 +80,26 @@ class RegisterController < ApplicationController
   private
 
   def get_client
-    Twitter::REST::Client.new do |config|
-      config.consumer_key = ENV['TWITTER_CONSUMER_KEY']
-      config.consumer_secret = ENV['TWITTER_CONSUMER_SECRET']
-      config.access_token = ENV['TWITTER_ACCESS_TOKEN']
-      config.access_token_secret = ENV['TWITTER_ACCESS_TOKEN_SECRET']
+    if @seller.twitter_token.nil?
+      # Twitter アカウントが登録されていない場合、@nearbuy_enpit17 を使用する
+      Twitter::REST::Client.new do |config|
+        config.consumer_key         = ENV['TWITTER_CONSUMER_KEY']
+        config.consumer_secret      = ENV['TWITTER_CONSUMER_SECRET']
+        config.access_token         = ENV['TWITTER_ACCESS_TOKEN']
+        config.access_token_secret  = ENV['TWITTER_ACCESS_TOKEN_SECRET']
+      end
+    else
+      # Twitter アカウントが登録されていれば、そのアカウントを使用する
+      Twitter::REST::Client.new do |config|
+        config.consumer_key         = ENV['TWITTER_CONSUMER_KEY']
+        config.consumer_secret      = ENV['TWITTER_CONSUMER_SECRET']
+        config.access_token         = @seller.twitter_token
+        config.access_token_secret  = @seller.twitter_secret
+      end
     end
   end
+
+  private
 
   def twitter_update(tweet)
     client = get_client()
@@ -98,10 +111,10 @@ class RegisterController < ApplicationController
     end
   end
 
-  def current_seller()
+  def current_seller
     @seller = Seller.find_by(token: request.headers['HTTP_X_AUTHORIZED_TOKEN'])
     unless @seller
-      render json: {errors: {'token': ['is not authorized']}}, status: :unauthorized
+      render json: { errors: { token: ['is not authorized'] }}, status: :unauthorized
     end
   end
 end
