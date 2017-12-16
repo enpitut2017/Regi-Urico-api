@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  before_action :current_seller, only: [:callback]
+  before_action :current_seller, only: [:setup]
 
   def new
     seller = Seller.find_by(name: login_params[:name])
@@ -16,6 +16,10 @@ class SessionsController < ApplicationController
     end
   end
 
+  def setup
+    session[:seller_id] = @seller.id
+  end
+
   def callback
     auth = auth_hash()
     twitter_info = {
@@ -26,7 +30,7 @@ class SessionsController < ApplicationController
         twitter_screen_name: auth.info.nickname,
         twitter_image_url: auth.info.image.sub('_normal', ''),
     }
-    @seller.update(twitter_info)
+    Seller.find_by(id: session[:seller_id]).update(twitter_info)
     redirect_to back_to || '/'
   end
 
@@ -40,7 +44,7 @@ class SessionsController < ApplicationController
     request.env['omniauth.auth']
   end
 
-  def current_seller()
+  def current_seller
     @seller = Seller.find_by(token: request.headers['HTTP_X_AUTHORIZED_TOKEN'])
     unless @seller
       render json: { errors: { token: ['is not authorized'] }}, status: :unauthorized
