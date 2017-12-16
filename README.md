@@ -644,15 +644,13 @@ HTTP 200 OK
 {
     "items": [
         {
-            "item_id": 1,
-            "event_id": 1,
+            "id": 1,
             "name": "1",
             "price": 1400,
             "count": 100
         },
         {
-            "item_id": 2,
-            "event_id": 1,
+            "id": 2,
             "name": "新しい本のタイトル",
             "price": 10000,
             "count": 20
@@ -716,15 +714,13 @@ HTTP 200 OK
 {
     "items": [
         {
-            "event_id": 4,
-            "item_id": 1,
+            "id": 1,
             "name": "安い本",
             "price": 100,
             "count": 20
         },
         {
-            "event_id": 4,
-            "item_id": 2,
+            "id": 2,
             "name": "高級ブック",
             "price": 10000,
             "count": 200
@@ -828,15 +824,13 @@ HTTP 200 OK
 {
     "items": [
         {
-            "item_id": 1,
-            "event_id": 1,
+            "id": 1,
             "name": "1",
             "price": 1400,
             "count": 100
         },
         {
-            "item_id": 2,
-            "event_id": 1,
+            "id": 2,
             "name": "新しい本のタイトル",
             "price": 10000,
             "count": 20
@@ -855,15 +849,13 @@ HTTP 404 Not Found
 {
     "items": [
         {
-            "event_id": 3,
-            "item_id": 11,
+            "id": 11,
             "name": "2冊目の本のタイトル",
             "price": 500,
             "count": 50,
         },
         {
-            "event_id": 3,
-            "item_id": 12,
+            "id": 12,
             "name": "3冊目の本のタイトル",
             "price": 700,
             "count": 100,
@@ -917,15 +909,13 @@ HTTP 200 OK
 {
     "items": [
         {
-            "event_id": 3,
-            "item_id": 11,
+            "id": 11,
             "name": "2冊目の本のタイトル",
             "price": 500,
             "count": 50,
         },
         {
-            "event_id": 3,
-            "item_id": 12,
+            "id": 12,
             "name": "3冊目の本のタイトル",
             "price": 700,
             "count": 100,
@@ -944,15 +934,13 @@ HTTP 404 Not Found
 {
     "items": [
         {
-            "event_id": 3,
-            "item_id": 11,
+            "id": 11,
             "name": "2冊目の本のタイトル",
             "price": 500,
             "count": 50,
         },
         {
-            "event_id": 3,
-            "item_id": 12,
+            "id": 12,
             "name": "3冊目の本のタイトル",
             "price": 700,
             "count": 100,
