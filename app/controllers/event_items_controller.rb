@@ -151,7 +151,6 @@ class EventItemsController < ApplicationController
     EventItem.where(event_id: event_id).each do |event_item|
       item = {
         id: event_item.item_id,
-        event_id: event_item.event_id,
         name: Item.find(event_item.item_id).name,
         price: event_item.price,
         count: event_item.logs.pluck(:diff_count).sum,
