@@ -53,21 +53,26 @@ class EventItemsController < ApplicationController
     json_request = JSON.parse(request.body.read)
     item_id = json_request['item_id']
     event_id = json_request['event_id']
+    new_count = json_request['count']
     item = Item.find_by(id: item_id)
     event = Event.find_by(id: event_id)
-    if item.nil? || event.nil?
-      # アイテムかイベントが存在しない
+    if item.nil? || event.nil? || new_count.nil?
+      # パラメータが不足している
       errors = []
-      errors.push({item_id: ['is not found']}) if item.nil?
-      errors.push({event_id: ['is not found.']}) if event.nil?
-      return render json: {'errors': errors}, status: :not_found
+      errors.push({ item_id: ['is not found'] }) if item.nil?
+      errors.push({ event_id: ['is not found.'] }) if event.nil?
+      errors.push({ count: ['is not found.'] }) if new_count.nil?
+      return render json: { 'errors': errors },
+                    status: :not_found
     end
     if item.seller != @seller
       # アイテムの所有者がトークンの所有者と異なる
-      return render json: {errors: {item_id: ['is not yours']}}, status: :forbidden
+      return render json: { errors: {item_id: ['is not yours'] } },
+                    status: :forbidden
     elsif event.seller != @seller
       # イベントの所有者がトークンの所有者と異なる
-      return render json: {errors: {event_id: ['is not yours']}}, status: :forbidden
+      return render json: { errors: {event_id: ['is not yours'] } },
+                    status: :forbidden
     end
     event_item = EventItem.find_by(item_id: item_id, event_id: event_id)
 
@@ -77,13 +82,13 @@ class EventItemsController < ApplicationController
       price = json_request['price'] || event_item.price
       event_item.update(price: price)
       Item.find(event_item.item_id).update(name: name)
-    end
-
-    items = event_items(event_id)
-    if event_item
+      present_count = event_item.logs.sum(:diff_count)
+      diff_count = new_count - present_count
+      event_item.logs.create(diff_count: diff_count)
+      items = event_items(event_id)
       render json: {items: items}
     else # 指定されたアイテムが存在しなかった場合、最新のitemsとともに404(not found)を返す
-      render json: {items: items}, status: :not_found
+      render json: { items: items }, status: :not_found
     end
   end
 
@@ -96,18 +101,22 @@ class EventItemsController < ApplicationController
 
     if item.nil?
       # アイテムが存在しない
-      return render json: {'errors': {item_id: ['is not found']}}, status: :not_found
+      return render json: { 'errors': { item_id: ['is not found'] } },
+                    status: :not_found
     elsif event.nil?
       # イベントが存在しない
-      return render json: {'errors': {event_id: ['is not found']}}, status: :not_found
+      return render json: { 'errors': { event_id: ['is not found'] } },
+                    status: :not_found
     end
 
     if item.seller != @seller
       # アイテムの所有者がトークンの所有者と異なる
-      return render json: {errors: {item_id: ['is not yours']}}, status: :forbidden
+      return render json: { errors: { item_id: ['is not yours'] } },
+                    status: :forbidden
     elsif event.seller != @seller
       # イベントの所有者がトークンの所有者と異なる
-      return render json: {errors: {event_id: ['is not yours']}}, status: :forbidden
+      return render json: { errors: { event_id: ['is not yours'] } },
+                    status: :forbidden
     end
 
     # event_itemの削除
@@ -115,9 +124,9 @@ class EventItemsController < ApplicationController
 
     items = event_items(event_id)
     if result.empty? # アイテムが何も削除されなかったなら、最新のitemsとともに404(not found)を返す
-      render json: {items: items}, status: :not_found
+      render json: { items: items }, status: :not_found
     else # アイテムが削除されたら、最新のitemsを返す
-      render json: {items: items}
+      render json: { items: items }
     end
   end
 
@@ -126,7 +135,8 @@ class EventItemsController < ApplicationController
   def current_seller()
     @seller = Seller.find_by(token: request.headers['HTTP_X_AUTHORIZED_TOKEN'])
     unless @seller
-      render json: {errors: {'token': ['is not authorized']}}, status: :unauthorized
+      render json: { errors: { 'token': ['is not authorized'] } },
+             status: :unauthorized
     end
   end
 
@@ -140,11 +150,11 @@ class EventItemsController < ApplicationController
     items = []
     EventItem.where(event_id: event_id).each do |event_item|
       item = {
-          id: event_item.item_id,
-          event_id: event_item.event_id,
-          name: Item.find(event_item.item_id).name,
-          price: event_item.price,
-          count: event_item.logs.pluck(:diff_count).sum,
+        id: event_item.item_id,
+        event_id: event_item.event_id,
+        name: Item.find(event_item.item_id).name,
+        price: event_item.price,
+        count: event_item.logs.pluck(:diff_count).sum,
       }
       items.push(item)
     end
