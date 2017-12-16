@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :register, only: [:create]
   # sessions
   post  '/signin',  to: 'sessions#new'
+  get '/auth/:provider/setup', to: 'sessions#setup'
   get '/auth/:provider/callback', to: 'sessions#callback'
   # sales log
   get '/events/sales_log/:id', to: 'events#sales_log'
