@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class RegisterController < ApplicationController
   before_action :current_seller
 
@@ -98,8 +96,6 @@ class RegisterController < ApplicationController
       end
     end
   end
-
-  private
 
   def twitter_update(tweet)
     client = get_client()
