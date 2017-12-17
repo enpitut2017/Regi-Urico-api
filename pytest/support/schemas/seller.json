@@ -1,0 +1,25 @@
+{
+  "title": "Seller",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "number"
+    },
+    "name": {
+      "type": "string"
+    },
+    "token": {
+      "type": "string"
+    },
+    "twitter_name": {
+      "type": ["string", "null"]
+    },
+    "twitter_screen_name": {
+      "type": ["string", "null"]
+    },
+    "twitter_image_url": {
+      "type": ["string", "null"]
+    }
+  },
+  "required": ["id", "name", "token"]
+}
