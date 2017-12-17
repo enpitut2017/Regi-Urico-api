@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   # sellers
   resources :sellers, only: [:create]
+  get '/sellers', to: 'sellers#show'
   patch '/sellers', to: 'sellers#update'
   delete '/sellers', to: 'sellers#destroy'
   # events

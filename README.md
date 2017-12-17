@@ -43,8 +43,11 @@
 ## Table of Contents
 
 * 販売者
-  * [POST [/sellers]](#post-sellers)
   * [POST [/signin]](#post-signin)
+  * [GET [/sellers]](#get-sellers)
+  * [POST [/sellers]](#post-sellers)
+  * [PATCH [/sellers]](#patch-sellers)
+  * [DELETE [/sellers]](#delete-sellers)
 * Event
   * [GET [/events]](#get-events)
   * [GET [/events/:event\_id]](#get-eventsevent_id)
@@ -63,56 +66,6 @@
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
 
-## POST [/sellers]
-
-販売者を新規登録する。
-
-### request
-
-```json
-{
-    "name": "kajyuuen",
-    "password": "password",
-    "password_confirmation": "password"
-}
-```
-
-### response
-
-作成成功
-
-```
-HTTP 201 Created
-```
-
-```json
-{
-    "id": 13,
-    "name": "kajyuuen",
-    "token": "a2jU5ZFtHxvNEdmdXCQkHTgT"
-}
-```
-
-作成失敗
-
-
-```
-HTTP 400 Bad Request
-```
-
-
-```json
-{
-    "errors": {
-        "password_confirmation": [
-            "doesn't match Password"
-        ],
-        "name": [
-            "has already been taken"
-        ]
-    }
-}
-```
 
 ## POST [/signin]
 
@@ -162,6 +115,120 @@ HTTP 401 Unauthorized
 }
 ```
 
+## GET [/sellers]
+
+トークンで認証された販売者を取得する。
+
+### request
+
+```
+X-Authorized-Token: q2w5ARRSDFLAKjqGSUGCfzjE6
+```
+
+### response
+
+取得成功 (Twitter認証している場合)
+
+```
+HTTP 200 OK
+```
+
+```json
+{
+    "id": 8,
+    "name": "こっこ",
+    "token": "xxxxxxxxxxxxxxxxx",
+    "twitter_name": "Regi-Urico ユーザー",
+    "twitter_screen_name": "regi_urico_2",
+    "twitter_image_url": "http://pbs.twimg.com/profile_images/941304454355103744/2ehVWSLA.jpg"
+}
+```
+
+取得成功 (Twitter認証していない場合)
+
+```
+HTTP 200 OK
+```
+
+```json
+{
+    "id": 8,
+    "name": "こっこ",
+    "token": "xxxxxxxxxxxxxxxxx",
+    "twitter_name": null,
+    "twitter_screen_name": null,
+    "twitter_image_url": null
+}
+```
+
+トークン認証失敗
+
+```
+HTTP 401 Unauthorized
+```
+
+```json
+{
+    "errors": {
+        "token": ["is not authorized"]
+    }
+}
+```
+
+## POST [/sellers]
+
+販売者を新規登録する。
+
+### request
+
+```json
+{
+    "name": "こっこ2",
+    "password": "password",
+    "password_confirmation": "password"
+}
+```
+
+### response
+
+作成成功
+
+```
+HTTP 201 Created
+```
+
+```json
+{
+    "id": 12,
+    "name": "こっこ2",
+    "token": "76LGVkEArqcuWEZwddrR7rqF",
+    "twitter_name": null,
+    "twitter_screen_name": null,
+    "twitter_image_url": null
+}
+```
+
+作成失敗
+
+
+```
+HTTP 400 Bad Request
+```
+
+
+```json
+{
+    "errors": {
+        "password_confirmation": [
+            "doesn't match Password"
+        ],
+        "name": [
+            "has already been taken"
+        ]
+    }
+}
+```
+
 ## PATCH [/sellers]
 
 トークンで認証された販売者のアカウント名やパスワードを変更する。
@@ -192,8 +259,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 あるいは
 
 ```json
+{
     "name": "urushiyama",
     "password": ""
+}
 ```
 
 `password`についても`name`と同様である。
@@ -206,7 +275,10 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 {
     "id": 1,
     "name": "urushiyama",
-    "token": "q2w5ARRr62KEZqGSUGCfzjE6"
+    "token": "q2w5ARRr62KEZqGSUGCfzjE6",
+    "twitter_name": null,
+    "twitter_screen_name": null,
+    "twitter_image_url": null
 }
 ```
 
@@ -234,7 +306,7 @@ HTTP 401 Unauthorized
 ```json
 {
     "errors": {
-        "token": ["is unauthorized"]
+        "token": ["is not authorized"]
     }
 }
 ```
@@ -286,7 +358,7 @@ HTTP 401 Unauthorized
 ```json
 {
     "errors": {
-        "token": ["is unauthorized"]
+        "token": ["is not authorized"]
     }
 }
 ```

@@ -17,8 +17,7 @@ class SessionsController < ApplicationController
   end
 
   def setup
-    session[:seller_id] = @seller.id
-  end
+    session[:seller_id] = @seller.id end
 
   def callback
     auth = auth_hash()
