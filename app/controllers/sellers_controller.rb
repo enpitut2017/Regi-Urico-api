@@ -1,5 +1,9 @@
 class SellersController < ApplicationController
-  before_action :current_seller, only: [:update, :destroy]
+  before_action :current_seller, only: [:show, :update, :destroy]
+
+  def show
+    render json: @seller
+  end
 
   def create
     @seller = Seller.new(seller_params)
@@ -51,7 +55,7 @@ class SellersController < ApplicationController
   def current_seller
     @seller = Seller.find_by(token: request.headers['HTTP_X_AUTHORIZED_TOKEN'])
     unless @seller
-      render json: { errors: {token: ['is unauthorized']} }, status: :unauthorized
+      render json: { errors: {token: ['is not authorized']} }, status: :unauthorized
     end
   end
 end
