@@ -50,21 +50,25 @@ class EventsController < ApplicationController
 
   def update
     json_request = JSON.parse(request.body.read)
-    @event = Event.find(json_request['id'])
-    if @event.seller == @seller
-      # イベントの所有者はトークンを持つカレントユーザと同一なので、更新を許可
-      @name = json_request['name']
-      @event.update_attribute(:name, @name)
-      if @name.nil? || @name.empty?
-        return render json: { errors: { name: ['cannot be blank'] }}, status: :bad_request
-      end
-      render json: {
-          id: @event.id,
-          name: @event.name,
-      }
-    else
+    event = Event.find_by(id: json_request['id'])
+    if event.nil?
+      # event が存在しない場合
+      return render json: { errors: { id: ['is not found'] } }, status: :not_found
+    elsif event.seller != @seller
       # イベントの所有者以外が更新しようとしているので、403: Forbiddenを返す
       render json: { errors: { id: ['event is not yours'] }}, status: :forbidden
+    else
+      # イベントの所有者がトークンを持つカレントユーザと同一なので、更新を許可
+      event.update(name: json_request['name'])
+      if event.invalid?
+        # 名前が空白など、データが不正な場合
+        return render json: { errors: event.errors }, status: :bad_request
+      else
+        return render json: {
+            id: event.id,
+            name: event.name,
+        }
+      end
     end
   end
 

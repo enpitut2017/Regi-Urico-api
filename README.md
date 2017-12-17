@@ -574,6 +574,38 @@ HTTP 200 OK
 }
 ```
 
+id のイベントが存在しない場合
+
+```
+HTTP 404 Not Found
+```
+
+```json
+{
+    "errors": {
+        "id": [
+            "is not found",
+        ]
+    }
+}
+```
+
+他人のイベントを修正しようとした場合
+
+```
+HTTP 403 Forbidden
+```
+
+```json
+{
+    "errors": {
+        "id": [
+            "is not yours",
+        ]
+    }
+}
+```
+
 nameが空欄の場合、修正に失敗する
 
 ```
@@ -584,7 +616,8 @@ HTTP 400 Bad Request
 {
     "errors": {
         "name": [
-            "cannot be blank"
+            "can't be blank",
+            "is too short (minimum is 1 character)"
         ]
     }
 }
