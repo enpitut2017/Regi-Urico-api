@@ -2,8 +2,12 @@ class EventsController < ApplicationController
   before_action :current_seller
 
   def index
-    @events = @seller.events
-    render json: { events: @events }
+    events = @seller.events
+    if events.empty?
+      default_event= @seller.events.create(name: '新規イベント')
+      events.push(default_event)
+    end
+    render json: { events: events }
   end
 
   def show
