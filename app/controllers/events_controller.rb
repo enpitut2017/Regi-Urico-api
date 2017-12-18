@@ -83,7 +83,7 @@ class EventsController < ApplicationController
       @event.destroy
 
       # 最後に更新されたイベントを返す
-      @event = Event.order('updated_at desc').first
+      @event = Event.where(seller: @seller).order('updated_at desc').first
       if @event.nil?
         render status: :no_content
       else
