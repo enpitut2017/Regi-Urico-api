@@ -20,14 +20,16 @@
 他の個人事業主向けの在庫管理アプリに比べて、購入者への通知の自動化、時間単位の売り上げの可視化・購入者との共有ができる、という優位性があります。
 
 ## URL
-- Twitter: https://twitter.com/nearbuy_enpit17
-- アプリ:  http://210.140.221.144/
+- アプリ: http://regi-urico.duckdns.org/
+- 通知用Twitterアカウント: https://twitter.com/nearbuy_enpit17
+- ユーザーテストTwitterアカウント: https://twitter.com/regi_urico_2
 - タスクボード:
   - -10/25 https://trello.com/b/h1uiYFdg/task-board
   - 10/27- https://trello.com/b/h1uiYFdg/task-board-10-27
   - 11/10- https://trello.com/b/bZkIE7zu/task-board-11-10
   - 11/27- https://trello.com/b/j2ztJ1Gq/task-board-11-27
   - 12/8- https://trello.com/b/9HLLtp7w/task-board-12-8
+- クライアントアプリのリポジトリ: https://github.com/enpitut2017/Regi-Urico-client
 
 ## Member
 
