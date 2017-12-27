@@ -1183,7 +1183,7 @@ HTTP 404 Not Found
 }
 ```
 
-## GET [/events/sales_log/:event_id]
+## GET [/sales_logs/:event_id]
 
 ### request
 
@@ -1195,33 +1195,55 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 認証成功
 
-- `sales`: イベントの総売上
-- `items[n].id`: アイテムのid
-- `items[n].subcount`: アイテムの売り上げ個数
-- `items[n].subsales`: アイテムの売り上げ額
+- リクエストした日時を`2017-12-31T15:00:00+09:00`とする
+- 日時は全てサーバ側でTokyoのタイムゾーンとして出力する
+- `"detailed"`は内訳を表示するか否かのフラグで、最新の販売履歴のみ`true`
 
 ```
 HTTP 200 OK
 ```
 
-```
+```json
 {
-    "sales": 17200,
-    "items": [
-        {
-            "id": 1,
-            "subcount": 10,
-            "subsales": 14000
-        },
-        {
-            "id": 2,
-            "subcount": 4,
-            "subsales": 3200
-        }
-    ]
+    "sales_logs": {
+        "today": [
+            {
+                "id": 21,
+                "time": "14:22",
+                "total": 2600,
+                "logs": [
+                    {
+                        "name": "GENSOUM@STER",
+                        "count": 1,
+                        "subtotal": 1400
+                    },
+                    {
+                        "name": "東方魔烈槍",
+                        "count": 2,
+                        "subtotal": 1200
+                    }
+                ],
+                "detailed": true
+            },
+            {
+                "id": 20,
+                "time": "14:13",
+                "total": 2800,
+                "logs": [
+                    {"name": "GENSOUM@STER", "count": 2, "subtotal": 2800}
+                ],
+                "detailed": false
+            }
+        ],
+        "yesterday": [
+            {"id": 19, "time": "16:12", "total": 600, "logs": [...], "detailed": false}, ...
+        ],
+        "2017/12/29": [
+            {"id": 7, "time": "17:54", "total": 1200, "logs": [...], "detailed": false}, ...
+        ]
+    }
 }
 ```
-
 
 イベントが見つからない場合
 
@@ -1265,4 +1287,10 @@ HTTP 401 Unauthorized
         ]
     }
 }
+```
+
+指定したイベントの売上履歴が存在しない場合
+
+```
+HTTP 204 No Content
 ```
