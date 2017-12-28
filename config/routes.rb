@@ -19,5 +19,5 @@ Rails.application.routes.draw do
   get '/auth/:provider/setup', to: 'sessions#setup'
   get '/auth/:provider/callback', to: 'sessions#callback'
   # sales log
-  get '/events/sales_log/:id', to: 'events#sales_log'
+  get '/sales_logs/:event_id', to: 'sales_logs#show'
 end

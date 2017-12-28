@@ -39,6 +39,10 @@ module RegiUricoApi
     # Skip views, helpers and assets when generating a new resource.
     #config.api_only = true
 
+    # output timezone
+    # 表示のみTimezoneをJSTにする（DBはUTCのまま）
+    config.time_zone = 'Tokyo'
+
     # omniauth
     config.api_only = false
     config.session_store :cookie_store, key: '_interslice_session'

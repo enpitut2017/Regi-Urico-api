@@ -1106,7 +1106,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
         {
             "id": 2,
             "count": 5
-        },
+        }
     ],
     "deposit": 20000
 }
@@ -1219,7 +1219,7 @@ HTTP 400 Bad Request
 }
 ```
 
-## GET [/events/sales_log/:event_id]
+## GET [/sales_logs/:event_id]
 
 ### request
 
@@ -1231,33 +1231,85 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 認証成功
 
-- `sales`: イベントの総売上
-- `items[n].id`: アイテムのid
-- `items[n].subcount`: アイテムの売り上げ個数
-- `items[n].subsales`: アイテムの売り上げ額
+- リクエストした日時を`2017-12-31T15:00:00+09:00`とする
+- 日時は全てサーバ側でTokyoのタイムゾーンとして出力する
 
 ```
 HTTP 200 OK
 ```
 
-```
+```json
 {
-    "sales": 17200,
-    "items": [
+    "sales_logs": [
         {
-            "id": 1,
-            "subcount": 10,
-            "subsales": 14000
+            "date": "2017-12-31T00:00:00+09:00",
+            "formatted_date": "Today",
+            "receipts": [
+                {
+                    "id": 21,
+                    "time": "2017-12-31T16:12:00+09:00",
+                    "formatted_time": "16:12:00",
+                    "total": 2600,
+                    "logs": [
+                        {
+                            "name": "GENSOUM@STER",
+                            "count": 1,
+                            "subtotal": 1400
+                        },
+                        {
+                            "name": "東方魔烈槍",
+                            "count": 2,
+                            "subtotal": 1200
+                        }
+                    ]
+                },
+                {
+                    "id": 20,
+                    "time": "2017-12-31T14:13:45+09:00",
+                    "formatted_time": "14:13:45",
+                    "total": 2800,
+                    "logs": [
+                        {
+                            "name": "GENSOUM@STER",
+                            "count": 2,
+                            "subtotal": 2800
+                        }
+                    ]
+                }
+            ]
         },
         {
-            "id": 2,
-            "subcount": 4,
-            "subsales": 3200
+            "date": "2017-12-30T00:00:00+09:00",
+            "formatted_date": "Yesterday",
+            "receipts": [
+                {
+                    "id": 19,
+                    "time": "2017-12-30T17:53:22+09:00",
+                    "formatted_time": "17:53:22",
+                    "total": 1400,
+                    "logs": [
+                        {
+                            "name": "GENSOUM@STER",
+                            "count": 1,
+                            "subtotal": 1400
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "date": "2017-12-29T00:00:00+09:00",
+            "formatted_date": "12/29",
+            "receipts": [...]
+        },
+        {
+            "date": "2016-10-20T00:00:00+09:00",
+            "formatted_date": "2016/10/20",
+            "receipts": [...]
         }
     ]
 }
 ```
-
 
 イベントが見つからない場合
 
@@ -1301,4 +1353,10 @@ HTTP 401 Unauthorized
         ]
     }
 }
+```
+
+指定したイベントの売上履歴が存在しない場合
+
+```
+HTTP 204 No Content
 ```
