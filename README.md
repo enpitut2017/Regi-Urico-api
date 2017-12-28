@@ -1106,7 +1106,7 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
         {
             "id": 2,
             "count": 5
-        },
+        }
     ],
     "deposit": 20000
 }

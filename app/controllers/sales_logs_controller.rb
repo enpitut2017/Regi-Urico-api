@@ -16,7 +16,7 @@ class SalesLogsController < ApplicationController
         # 指定したイベントの売上履歴が存在しない
         return render status: :no_content
       end
-      sales_logs_by_day = event_sales_logs.group_by{|sales_log| sales_log.created_at.beginning_of_day}
+      sales_logs_by_day = event_sales_logs.group_by { |sales_log| sales_log.created_at.beginning_of_day }
       sales_logs_by_day.each do |date, sales_logs|
         receipts_array = []
         sales_logs.each do |sales_log|
@@ -25,7 +25,7 @@ class SalesLogsController < ApplicationController
           sales_log.logs.each do |log|
             count = -log.diff_count
             subtotal = log.event_item.price * count
-            logs_array.push({name: log.event_item.item.name, count: count, subtotal: subtotal})
+            logs_array.push({ name: log.event_item.item.name, count: count, subtotal: subtotal })
             total += subtotal
           end
           receipts_array.push({
@@ -33,38 +33,16 @@ class SalesLogsController < ApplicationController
             time: sales_log.created_at.to_datetime.to_s,
             formatted_time: sales_log.created_at.strftime('%H:%M:%S'),
             total: total,
-            logs: logs_array
+            logs: logs_array,
           })
         end
-        if date.to_date == Date.today
-          # Today
-          response.push({
-            date: date.to_datetime.to_s,
-            formatted_date: 'Today',
-            receipts: receipts_array
-          })
-        elsif date.to_date == Date.yesterday
-          # Yesterday
-          response.push({
-            date: date.to_datetime.to_s,
-            formatted_date: 'Yesterday',
-            receipts: receipts_array
-          })
-        elsif date.year == Date.current.year
-          response.push({
-            date: date.to_datetime.to_s,
-            formatted_date: date.strftime('%m/%d'),
-            receipts: receipts_array
-          })
-        else
-          response.push({
-            date: date.to_datetime.to_s,
-            formatted_date: date.strftime('%Y/%m/%d'),
-            receipts: receipts_array
-          })
-        end
+        response.push({
+          date: date.to_datetime.to_s,
+          formatted_date: format_date(date),
+          receipts: receipts_array,
+        })
       end
-      return render json: {sales_logs: response}
+      return render json: { sales_logs: response }
     end
   end
 
@@ -77,7 +55,19 @@ private
   def current_seller
     @seller = Seller.find_by(token: request.headers['HTTP_X_AUTHORIZED_TOKEN'])
     unless @seller
-      render json: { errors: { token: ['is not authorized'] }}, status: :unauthorized
+      render json: { errors: { token: ['is not authorized'] } }, status: :unauthorized
+    end
+  end
+
+  def format_date(date)
+    if date == Date.today
+      'Today'
+    elsif date == Date.yesterday
+      'Yesterday'
+    elsif date.year == Date.current.year
+      date.strftime('%m/%d')
+    else
+      date.strftime('%Y/%m/%d')
     end
   end
 end
