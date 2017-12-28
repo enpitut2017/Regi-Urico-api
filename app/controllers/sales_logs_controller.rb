@@ -2,7 +2,7 @@ class SalesLogsController < ApplicationController
   before_action :current_seller
 
   def show
-    event = Event.find_by(accept_params[:event_id])
+    event = Event.find_by(id: accept_params[:event_id])
     if event.nil?
       # 指定されたイベントが見つからない
       return render json: { errors: { id: ['is not found'] }}, status: :not_found
