@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171203172412) do
+ActiveRecord::Schema.define(version: 20171227090957) do
 
   create_table "event_items", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "price"
@@ -43,7 +43,17 @@ ActiveRecord::Schema.define(version: 20171203172412) do
     t.integer "diff_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "sales_log_id"
     t.index ["event_item_id"], name: "index_logs_on_event_item_id"
+    t.index ["sales_log_id"], name: "index_logs_on_sales_log_id"
+  end
+
+  create_table "sales_logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "event_id"
+    t.integer "deposit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_sales_logs_on_event_id"
   end
 
   create_table "sellers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -63,4 +73,6 @@ ActiveRecord::Schema.define(version: 20171203172412) do
   add_foreign_key "events", "sellers"
   add_foreign_key "items", "sellers"
   add_foreign_key "logs", "event_items"
+  add_foreign_key "logs", "sales_logs"
+  add_foreign_key "sales_logs", "events"
 end

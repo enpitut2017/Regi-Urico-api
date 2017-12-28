@@ -19,6 +19,7 @@ class RegisterController < ApplicationController
           return render json: { 'errors': { event_id: ['is not yours'] }}, status: :forbidden
         end
         ActiveRecord::Base.transaction do
+          sales_log = event.sales_logs.create!(deposit: json_request['deposit'])
           items.each do |item|
             if item['count'].nil?
               # count が存在しない場合
@@ -31,7 +32,8 @@ class RegisterController < ApplicationController
               # アイテムが見つからない場合
               return render json: { 'errors': { id: ['is not found'] }}, status: :not_found
             end
-            event_item.logs.create(diff_count: item['count'])
+            log = event_item.logs.new(diff_count: item['count'], sales_log: sales_log)
+            log.save!
             item = Item.find_by(id: item['id'])
             tweet = "#{item.seller.name}の「#{item.name}」は残り#{event_item.logs.sum(:diff_count)}個になりました！"
             tweets.push(tweet)
@@ -70,7 +72,13 @@ class RegisterController < ApplicationController
         end
         render json: { event_id: event.id, name: event.name, items: items }
       rescue => e
-        render json: {errors: e.message}, status: :bad_request
+        if e.respond_to?(:record)
+          # recordに起因するエラー（パラメータのvalidation failなど）
+          render json: {errors: e.record.errors}, status: :bad_request
+        else
+          # recordに起因しないエラー
+          render json: {errors: {transaction: [e.message]}}, status: :bad_request
+        end
       end
     end
   end
@@ -101,7 +109,7 @@ class RegisterController < ApplicationController
     client = get_client()
     begin
       client.update!(tweet)
-    rescue Twitter::Error::DuplicateStatus => e
+    rescue Twitter::Error::DuplicateStatus
       time_string = Time.now.strftime('%Y/%m/%d %H:%M')
       client.update!("#{tweet} (#{time_string})")
     end

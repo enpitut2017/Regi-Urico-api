@@ -1107,9 +1107,12 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
             "id": 2,
             "count": 5
         },
-    ]
+    ],
+    "deposit": 20000
 }
 ```
+
+`deposit`: 預かり金額
 
 ### response
 
@@ -1178,6 +1181,39 @@ HTTP 404 Not Found
     "errors": {
         "id": [
             "is not found"
+        ]
+    }
+}
+```
+
+必要なリクエストパラメータが不足している場合
+
+```
+HTTP 400 Bad Request
+```
+
+```json
+{
+    "errors": {
+        "deposit": [
+            "can't be blank",
+            "is not a number"
+        ]
+    }
+}
+```
+
+上記以外に何らかの理由でトランザクションのコミットに失敗した場合
+
+```
+HTTP 400 Bad Request
+```
+
+```json
+{
+    "errors": {
+        "transaction": [
+            "Some errors have occurred"
         ]
     }
 }
