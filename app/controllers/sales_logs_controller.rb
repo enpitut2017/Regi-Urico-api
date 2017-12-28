@@ -38,7 +38,7 @@ class SalesLogsController < ApplicationController
         end
         response.push({
           date: date.to_datetime.to_s,
-          formatted_date: format_date(date),
+          formatted_date: format_date(date.to_date),
           receipts: receipts_array,
         })
       end
