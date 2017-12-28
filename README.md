@@ -1241,43 +1241,74 @@ HTTP 200 OK
 
 ```json
 {
-    "sales_logs": {
-        "today": [
-            {
-                "id": 21,
-                "time": "14:22",
-                "total": 2600,
-                "logs": [
-                    {
-                        "name": "GENSOUM@STER",
-                        "count": 1,
-                        "subtotal": 1400
-                    },
-                    {
-                        "name": "東方魔烈槍",
-                        "count": 2,
-                        "subtotal": 1200
-                    }
-                ],
-                "detailed": true
-            },
-            {
-                "id": 20,
-                "time": "14:13",
-                "total": 2800,
-                "logs": [
-                    {"name": "GENSOUM@STER", "count": 2, "subtotal": 2800}
-                ],
-                "detailed": false
-            }
-        ],
-        "yesterday": [
-            {"id": 19, "time": "16:12", "total": 600, "logs": [...], "detailed": false}, ...
-        ],
-        "2017/12/29": [
-            {"id": 7, "time": "17:54", "total": 1200, "logs": [...], "detailed": false}, ...
-        ]
-    }
+    "sales_logs": [
+        {
+            "date": "2017-12-31T00:00:00+09:00",
+            "formatted_date": "Today",
+            "receipts": [
+                {
+                    "id": 21,
+                    "time": "2017-12-31T16:12:00+09:00"
+                    "formatted_time": "16:12:00",
+                    "total": 2600,
+                    "logs": [
+                        {
+                            "name": "GENSOUM@STER",
+                            "count": 1,
+                            "subtotal": 1400
+                        },
+                        {
+                            "name": "東方魔烈槍",
+                            "count": 2,
+                            "subtotal": 1200
+                        }
+                    ]
+                },
+                {
+                    "id": 20,
+                    "time": "2017-12-31T14:13:45+09:00"
+                    "formatted_time": "14:13:45",
+                    "total": 2800,
+                    "logs": [
+                        {
+                            "name": "GENSOUM@STER",
+                            "count": 2,
+                            "subtotal": 2800
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "date": "2017-12-30T00:00:00+09:00",
+            "formatted_date": "Yesterday",
+            "receipts": [
+                {
+                    "id": 19,
+                    "time": "2017-12-30T17:53:22+09:00"
+                    "formatted_time": "17:53:22",
+                    "total": 1400,
+                    "logs": [
+                        {
+                            "name": "GENSOUM@STER",
+                            "count": 1,
+                            "subtotal": 1400
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "date": "2017-12-29T00:00:00+09:00",
+            "formatted_date": "12/29",
+            "receipts": [...]
+        },
+        {
+            "date": "2016-10-20T00:00:00+09:00",
+            "formatted_date": "2016/10/20",
+            "receipts": [...]
+        }
+    ]
 }
 ```
 
