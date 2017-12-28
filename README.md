@@ -1233,7 +1233,6 @@ X-Authorized-Token: q2w5ARRr62KEZqGSUGCfzjE6
 
 - リクエストした日時を`2017-12-31T15:00:00+09:00`とする
 - 日時は全てサーバ側でTokyoのタイムゾーンとして出力する
-- `"detailed"`は内訳を表示するか否かのフラグで、最新の販売履歴のみ`true`
 
 ```
 HTTP 200 OK
