@@ -29,7 +29,7 @@ class SalesLogsController < ApplicationController
             logs_array.push({name: log.event_item.item.name, count: count, subtotal: subtotal})
             total += subtotal
           end
-          array.push({id: sales_log.id, time: sales_log.created_at.strftime('%H:%M:%S'), total: total, logs: logs_array, detailed: detailed})
+          day_array.push({id: sales_log.id, time: sales_log.created_at.strftime('%H:%M:%S'), total: total, logs: logs_array, detailed: detailed})
           detailed = false
         end
         if day == Date.today
