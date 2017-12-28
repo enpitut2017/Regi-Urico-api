@@ -74,7 +74,7 @@ class EventItemsController < ApplicationController
       return render json: { errors: {event_id: ['is not yours'] } },
                     status: :forbidden
     end
-    event_item = EventItem.find_by(item_id: item_id, event_id: event_id)
+    event_item = EventItem.find_by(item_id: item_id, event_id: event_id, deleted: false)
 
     # event_itemの更新
     if event_item
@@ -120,10 +120,10 @@ class EventItemsController < ApplicationController
     end
 
     # event_itemの削除
-    result = EventItem.where(item_id: item_id, event_id: event_id).destroy_all
+    result = EventItem.where(item_id: item_id, event_id: event_id, deleted: false).update_all(["deleted = true, updated_at = ? ", Time.now.utc])
 
     items = event_items(event_id)
-    if result.empty? # アイテムが何も削除されなかったなら、最新のitemsとともに404(not found)を返す
+    if result == 0 # アイテムが何も削除されなかったなら、最新のitemsとともに404(not found)を返す
       render json: { items: items }, status: :not_found
     else # アイテムが削除されたら、最新のitemsを返す
       render json: { items: items }
@@ -148,7 +148,7 @@ class EventItemsController < ApplicationController
     end
 
     items = []
-    EventItem.where(event_id: event_id).each do |event_item|
+    EventItem.where(event_id: event_id, deleted: false).each do |event_item|
       item = {
         id: event_item.item_id,
         name: Item.find(event_item.item_id).name,
