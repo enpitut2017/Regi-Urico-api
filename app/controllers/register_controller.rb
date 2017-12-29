@@ -27,7 +27,7 @@ class RegisterController < ApplicationController
             end
             # 販売数が 0 だった場合は記録せずにスキップする
             next if item['count'].zero?
-            event_item = EventItem.find_by(event_id: json_request['event_id'], item_id: item['id'])
+            event_item = EventItem.find_by(event_id: json_request['event_id'], item_id: item['id'], deleted: false)
             if event_item.nil?
               # アイテムが見つからない場合
               return render json: { 'errors': { id: ['is not found'] }}, status: :not_found
@@ -58,9 +58,9 @@ class RegisterController < ApplicationController
 
         # 最新のアイテムリストを返す
         items = []
-        event.event_items.each do |event_item|
+        event.event_items.where(deleted: false).each do |event_item|
           item = Item.find_by(id: event_item.item_id)
-          price = EventItem.find_by(item_id: item.id).price
+          price = EventItem.find_by(item_id: item.id, deleted: false).price
           count = event_item.logs.sum(:diff_count)
           items.push({
                          price: price,

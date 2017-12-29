@@ -13,11 +13,11 @@ class EventsController < ApplicationController
     elsif @event.seller != @seller
       render json: { errors: { id: ['is not yours'] }}, status: :forbidden
     else
-      event_items = EventItem.where(event_id: @event.id)
+      event_items = EventItem.where(event_id: @event.id, deleted: false)
       items = []
       event_items.each do |event_item|
         item = Item.find_by(id: event_item.item_id)
-        price = EventItem.find_by(item_id: item.id).price
+        price = EventItem.find_by(item_id: item.id, deleted: false).price
         count = event_item.logs.sum(:diff_count)
         items.push({
             price: price,
@@ -45,7 +45,7 @@ class EventsController < ApplicationController
       return render json: { id: @event.id, name: @event.name }, status: :created
     else
       return render json: { errors: @event.errors.messages }, status: :bad_request
-   end
+    end
   end
 
   def update
@@ -106,7 +106,7 @@ class EventsController < ApplicationController
       # イベントの所有者はトークンを持つカレントユーザと同一なので、ログ出力を許可
       items = []
       sales = 0
-      @event.event_items.each do |item|
+      @event.event_items.where(deleted: false).each do |item|
         subcounts = -item.logs.where("diff_count < 0").sum(:diff_count)
         subsales = subcounts * item.price
         sales += subsales
