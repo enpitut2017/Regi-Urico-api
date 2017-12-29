@@ -32,7 +32,7 @@ class RegisterController < ApplicationController
               # アイテムが見つからない場合
               return render json: { 'errors': { id: ['is not found'] }}, status: :not_found
             end
-            log = event_item.logs.new(diff_count: item['count'], sales_log: sales_log)
+            log = event_item.logs.new(diff_count: item['count'], sales_log: sales_log, current_price: event_item.price)
             log.save!
             item = Item.find_by(id: item['id'])
             tweet = "#{item.seller.name}の「#{item.name}」は残り#{event_item.logs.sum(:diff_count)}個になりました！"

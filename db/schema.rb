@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 20171228164606) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "sales_log_id"
+    t.integer "current_price"
     t.index ["event_item_id"], name: "index_logs_on_event_item_id"
     t.index ["sales_log_id"], name: "index_logs_on_sales_log_id"
   end
