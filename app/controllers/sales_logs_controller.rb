@@ -24,7 +24,7 @@ class SalesLogsController < ApplicationController
           logs_array = []
           sales_log.logs.each do |log|
             count = -log.diff_count
-            subtotal = log.event_item.price * count
+            subtotal = (log.current_price || log.event_item.price) * count
             logs_array.push({ name: log.event_item.item.name, count: count, subtotal: subtotal })
             total += subtotal
           end
