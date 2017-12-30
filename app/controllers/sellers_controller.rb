@@ -19,9 +19,9 @@ class SellersController < ApplicationController
     new_name = seller_params[:name]
     new_password = seller_params[:password]
     if @seller.update_attributes(
-      name: (new_name.blank?) ? @seller.name : new_name,
-      password: new_password || "",
-      password_confirmation: new_password || ""
+        name: (new_name.blank?) ? @seller.name : new_name,
+        password: new_password || "",
+        password_confirmation: new_password || ""
     ) then
       # 更新成功
       render json: @seller

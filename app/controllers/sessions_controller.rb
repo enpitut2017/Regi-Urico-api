@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  before_action :current_seller, only: [:setup]
+  #before_action :current_seller, only: [:setup]
 
   def new
     seller = Seller.find_by(name: login_params[:name])
@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
   end
 
   def setup
-    session[:seller_id] = @seller.id end
+  end
 
   def callback
     auth = auth_hash()
@@ -29,14 +29,23 @@ class SessionsController < ApplicationController
         twitter_screen_name: auth.info.nickname,
         twitter_image_url: auth.info.image.sub('_normal', ''),
     }
-    Seller.find_by(id: session[:seller_id]).update(twitter_info)
-    redirect_to back_to || '/'
+    seller_id = auth_params[:seller_id]
+    if seller_id
+      Seller.find_by(id: seller_id).update(twitter_info)
+      redirect_to back_to || '/'
+    else
+      render json: { errors: { seller_id: ['is not found'] } }, status: :bad_request
+    end
   end
 
   private
 
   def login_params
     params.permit(:name, :password)
+  end
+
+  def auth_params
+    params.permit(:seller_id, :oauth_token, :oauth_verifier, :provider)
   end
 
   def auth_hash
